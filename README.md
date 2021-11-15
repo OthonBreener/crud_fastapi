@@ -34,3 +34,8 @@ pip install psycopg2-binary
 ```
 pip install validate-docbr
 ```
+
+* Biblioteca utilizada para validar CEP:
+```
+pip install pycep-correios
+```
