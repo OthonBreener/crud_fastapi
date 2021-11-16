@@ -45,6 +45,8 @@ def find_address_by_id(id: int):
         statement = select(Address).where(Address.id == id)
         result = session.execute(statement)
         results = result.scalars().all()
+        if not results:
+            raise HTTPException(status_code=404, detail='Address not found!')
 
     return results
 
@@ -61,7 +63,10 @@ def find_address_by_id_user(user_id: int):
         statement = select(Address).where(Address.user_id == user_id)
         result = session.execute(statement)
         results = result.scalars().all()
-        return results
+        if not results:
+            raise HTTPException(status_code=404, detail='Address not found!')
+
+    return results
 
 
 def update_address(id: int, address: AddressUpdate):

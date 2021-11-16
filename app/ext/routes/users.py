@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from app.ext.db.users_model import User, UserUpdate, UserRead
 from app.ext.controllers import user_controller
 
+
 router = APIRouter(
     prefix="/users",
     tags=['Users'],
@@ -16,7 +17,6 @@ async def post_user(user: User):
     Rota que adiciona um novo usuário.
     Rota Signup
     """
-
     user_controller.add_user(user)
     return user
 

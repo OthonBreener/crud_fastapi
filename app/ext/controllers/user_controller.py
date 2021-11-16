@@ -2,12 +2,35 @@ from fastapi import HTTPException
 from sqlmodel import Session, select
 from app.ext.db import engine
 from app.ext.db.users_model import User, UserUpdate
-
+from app.ext.providers import hash_provider
 
 def add_user(user: User):
     """
     Método que adiciona um novo usuário no banco de dados.
     """
+    user.senha = hash_provider.generation_hash(user.senha)
+    user.senha_repet = hash_provider.generation_hash(user.senha_repet)
+
+    user_exist_cpf = find_users_by_cpf(user.CPF)
+    if user_exist_cpf:
+        raise HTTPException(
+                status_code=400,
+                detail='Já existe um usuário cadastrado com este cpf.'
+            )
+
+    user_exist_pis = find_users_by_pis(user.PIS)
+    if user_exist_pis:
+        raise HTTPException(
+                status_code=400,
+                detail='Já existe um usuário cadastrado com este pis.'
+            )
+
+    user_exist_email = find_users_by_email(user.email)
+    if user_exist_email:
+        raise HTTPException(
+                status_code=400,
+                detail='Já existe um usuário cadastrado com este email.'
+            )
 
     with Session(engine) as session:
         session.add(user)
@@ -42,6 +65,45 @@ def find_users_by_id(id: int):
     return results
 
 
+def find_users_by_cpf(cpf: str):
+    """
+    Função que busca um usuário pelo cpf.
+    """
+
+    with Session(engine) as session:
+        statement = select(User).where(User.CPF == cpf)
+        result = session.exec(statement)
+        results = result.all()
+
+    return results
+
+
+def find_users_by_pis(pis: str):
+    """
+    Função que busca um usuário pelo PIS.
+    """
+
+    with Session(engine) as session:
+        statement = select(User).where(User.PIS == pis)
+        result = session.exec(statement)
+        results = result.all()
+
+    return results
+
+
+def find_users_by_email(email: str):
+    """
+    Função que busca um usuário pelo email.
+    """
+
+    with Session(engine) as session:
+        statement = select(User).where(User.email == email)
+        result = session.exec(statement)
+        results = result.all()
+
+    return results
+
+
 def update_users(id: int, user: UserUpdate):
     """
     Função que atualiza um usuário no banco de dados,
@@ -52,13 +114,10 @@ def update_users(id: int, user: UserUpdate):
         user: Request com os dados a serem atualizados
     """
 
-
     with Session(engine) as session:
         db_user = session.get(User, id)
         if not db_user:
             raise HTTPException(status_code=404, detail="User not found")
-
-        #import ipdb; ipdb.set_trace()
 
         user_data = user.dict(exclude_unset=True)
         for key, value in user_data.items():

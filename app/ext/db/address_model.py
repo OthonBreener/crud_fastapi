@@ -62,13 +62,13 @@ class Address(SQLModel, table=True):
             return ecnf
 
 
-    @validator('CEP')
+    #@validator('CEP')
     def cidade_deve_ser_a_mesma_da_retornada_pela_busca_na_api_do_correios(cls, value):
         """
         Método que válida se a cidade inserida corresponde
         ao cep passado.
         """
-        
+
         try:
             address = get_address_from_cep(value, webservice=WebService.APICEP)
 
@@ -87,13 +87,13 @@ class Address(SQLModel, table=True):
 
 class AddressRead(SQLModel):
 
-    country: str
-    state: str
-    CEP: str
-    city: str
-    street: str
-    number: int
-    complement: str
+    country: Optional[str]
+    state: Optional[str]
+    CEP: Optional[str]
+    city: Optional[str]
+    street: Optional[str]
+    number: Optional[int]
+    complement: Optional[str]
     user_id: Optional[int]
 
     class Config:
