@@ -1,6 +1,6 @@
 from typing import List
 from fastapi import APIRouter
-from app.ext.db.users_model import User, UserUpdate, UserRead
+from app.ext.db.users_model import User, UserUpdate, UserRead, UserLogin
 from app.ext.controllers import user_controller
 
 
@@ -19,6 +19,12 @@ async def post_user(user: User):
     """
     user_controller.add_user(user)
     return user
+
+
+@router.post("/token")
+async def login_user(user_login: UserLogin, response_model_exclude_none=True):
+    user_controller.login(user_login)
+    return user_login
 
 
 @router.get("/", response_model=List[UserRead])

@@ -1,7 +1,7 @@
 ## Como rodar o projeto
-
-* uvicorn app.main:app --reload
-
+```
+uvicorn app.main:app --reload
+```
 
 ## Banco de dados utilizado:
 ```
@@ -39,3 +39,7 @@ pip install validate-docbr
 ```
 pip install pycep-correios
 ```
+
+* Api utilizada para gerar cpfs e pis válidos:
+
+https://www.4devs.com.br/gerador_de_pis_pasep

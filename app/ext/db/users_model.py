@@ -83,6 +83,7 @@ class User(SQLModel, table=True):
 
         return ValueError(f'PIS: {value} inválido!')
 
+
 class UserRead(SQLModel):
     """
     Classe utilizada para retornar apenas
@@ -94,6 +95,14 @@ class UserRead(SQLModel):
     full_name: Optional[str] = None
     CPF: Optional[str] = None
     PIS: Optional[str] = None
+
+
+class UserLogin(SQLModel):
+
+    senha: str
+    email: Optional[EmailStr]
+    CPF: Optional[str]
+    PIS: Optional[str]
 
 
 class UserUpdate(SQLModel):

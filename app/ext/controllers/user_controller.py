@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from sqlmodel import Session, select
 from app.ext.db import engine
-from app.ext.db.users_model import User, UserUpdate
+from app.ext.db.users_model import User, UserUpdate, UserLogin
 from app.ext.providers import hash_provider
 
 def add_user(user: User):
@@ -36,6 +36,39 @@ def add_user(user: User):
         session.add(user)
         session.commit()
         session.refresh(user)
+
+
+def login(user_login: UserLogin):
+    """
+    Rota que autentifica um usuário,
+    podendo este logar por email, cpf ou pis mais senha.
+    """
+
+    senha = user_login.senha
+    email = user_login.email
+    cpf = user_login.CPF
+    pis = user_login.PIS
+
+    user_email = find_users_by_email(email)
+    user_cpf = find_users_by_cpf(cpf)
+    user_pis = find_users_by_pis(pis)
+
+    if user_email and user_cpf and user_pis is None:
+        raise HTTPException(status_code=400, detail='Login ou senha incorretos!')
+
+    if user_email:
+        validation_senha =  hash_provider.verification_hash(user_login.senha, user_email[0].senha)
+
+    elif user_cpf:
+        validation_senha =  hash_provider.verification_hash(user_login.senha, user_cpf[0].senha)
+
+    else:
+        validation_senha =  hash_provider.verification_hash(user_login.senha, user_pis[0].senha)
+
+    if not validation_senha:
+        raise HTTPException(status_code=400, detail='Login ou senha incorretos!')
+
+    return user_login
 
 
 def find_users():
