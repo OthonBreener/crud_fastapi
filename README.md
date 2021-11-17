@@ -43,3 +43,8 @@ pip install pycep-correios
 * Api utilizada para gerar cpfs e pis válidos:
 
 https://www.4devs.com.br/gerador_de_pis_pasep
+
+* Biblioteca para gerar e verificar tokens JWT:
+```
+pip install python-jose[cryptography]
+```

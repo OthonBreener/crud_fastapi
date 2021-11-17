@@ -105,6 +105,11 @@ class UserLogin(SQLModel):
     PIS: Optional[str]
 
 
+class UserLoginSucess(SQLModel):
+    user: UserRead
+    access_token: str
+
+
 class UserUpdate(SQLModel):
     """
     Classe utilizada para atualizar os dados com o método

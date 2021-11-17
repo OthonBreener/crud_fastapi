@@ -10,23 +10,6 @@ router = APIRouter(
     responses={404: {"description": "Not Found"}},
 )
 
-
-@router.post("/signup", response_model=UserRead)
-async def post_user(user: User):
-    """
-    Rota que adiciona um novo usuário.
-    Rota Signup
-    """
-    user_controller.add_user(user)
-    return user
-
-
-@router.post("/token")
-async def login_user(user_login: UserLogin, response_model_exclude_none=True):
-    user_controller.login(user_login)
-    return user_login
-
-
 @router.get("/", response_model=List[UserRead])
 async def get_user():
     """
