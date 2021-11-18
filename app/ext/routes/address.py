@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from app.ext.db.address_model import Address, AddressUpdate
 from app.ext.controllers import address_controller
 
+
 router = APIRouter(
     prefix="/address",
     tags=['Address'],
@@ -17,7 +18,7 @@ async def post_address(address: Address):
     no banco de dados.
     """
 
-    address_controller.add_address(address)
+    await address_controller.add_address(address)
     return address
 
 

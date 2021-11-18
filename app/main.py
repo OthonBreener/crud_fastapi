@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from sqlmodel import SQLModel
 from dotenv import load_dotenv
-from app.ext.db import engine
+from app.ext.db import engine, init_db
 from app.ext.routes import users, address, auth, templates
 from fastapi.staticfiles import StaticFiles
 #from fastapi.middlewares.core import CORSMiddleware
@@ -21,9 +21,13 @@ app.add_middleware(
 )
 """
 
+@app.on_event('startup')
+async def on_startup():
+    await init_db()
+
 app.include_router(users.router)
 app.include_router(address.router)
 app.include_router(auth.router)
 app.include_router(templates.router)
 
-SQLModel.metadata.create_all(engine)
+#SQLModel.metadata.create_all(engine)

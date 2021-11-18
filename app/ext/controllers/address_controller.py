@@ -2,19 +2,22 @@ from fastapi import HTTPException
 from sqlmodel import Session, select
 from app.ext.db import engine
 from app.ext.db.address_model import Address, AddressUpdate
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.ext.db import get_session
 
 
-def add_address(address: Address):
+async def add_address(address: Address):
     """
     Método que adiciona o endereço do usuário.
     Input:
         address: Endereço
     """
 
-    with Session(engine) as session:
-        session.add(address)
-        session.commit()
-        session.refresh(address)
+    #with Session(engine) as session:
+    session = get_session()
+    session.add(address)
+    await session.commit()
+    await session.refresh(address)
 
 
 def find_address():
