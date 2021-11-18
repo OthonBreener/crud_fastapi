@@ -1,0 +1,106 @@
+<meta charset="UTF-8"></meta>
+
+<meta
+  http-equiv="X-UA-Compatible"
+  content="IE=edge">
+</meta>
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0">
+</meta>
+
+<link
+  href="{{ url_for('static', path ='/style.css')}}"
+  rel="stylesheet">
+</link>
+
+<title>Registre-se</title>
+
+<div id="login">
+  <form
+    class="card"
+    method="POST">
+    <div class="card-header"><h2>Cadastre seu endereço</h2></div>
+
+    <div class="card-content">
+      <div class="card-content-area">
+        <label for="country">País</label>
+
+        <input
+          id="country"
+          autocomplete="off"
+          name="country"
+          type="text"/>
+      </div>
+
+      <div class="card-content-area">
+        <label for="state">Estado</label>
+
+        <input
+          id="state"
+          autocomplete="off"
+          name="state"
+          type="text"/>
+      </div>
+
+      <div class="card-content-area">
+        <label for="city">Cidade</label>
+
+        <input
+          id="city"
+          autocomplete="off"
+          name="city"
+          type="text"/>
+      </div>
+
+      <div class="card-content-area">
+        <label for="cep">CEP</label>
+
+        <input
+          id="cep"
+          autocomplete="off"
+          name="cep"
+          type="text"/>
+      </div>
+
+      <div class="card-content-area">
+        <label for="street">Rua</label>
+
+        <input
+          id="street"
+          autocomplete="off"
+          name="street"
+          type="text"/>
+      </div>
+
+      <div class="card-content-area">
+        <label for="password2">Número</label>
+
+        <input
+          id="number"
+          autocomplete="off"
+          name="number"
+          type="text"/>
+      </div>
+
+      <div class="card-content-area">
+        <label for="password2">Complemento</label>
+
+        <input
+          id="complement"
+          autocomplete="off"
+          name="complement"
+          type="text"/>
+      </div>
+
+    </div>
+
+    <div class="card-footer">
+      <input
+        class="submit"
+        type="submit"
+        value="Cadastrar"/>
+    </div>
+  </form>
+</div>
