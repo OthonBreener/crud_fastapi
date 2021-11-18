@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+<html lang="pt-br">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        <meta name="viewport"content="width=device-width, initial-scale=1.0">
+
+        <link href="{{ url_for('static', path ='/style.css')}}"  rel="stylesheet" >
+
+        <title>Login</title>
+
+    </head>
+
+    <body>
+      <div id="login">
+
+          <form class="card">
+
+              <div class="card-header">
+
+                  <h2>Login</h2>
+
+              </div>
+
+              <div class="card-content">
+
+
+                  <div class="card-content-area">
+
+                    <form method="POST">
+
+                      <label for="usuario">Usuário</label>
+
+                      <input type="text" id="usuario" autocomplete="off" placeholder="Email / CPF / PIS">
+
+                    </form>
+
+                  </div>
+
+
+                  <div class="card-content-area">
+
+                    <form method="POST">
+
+                      <label for="password">Senha</label>
+
+                      <input type="password" id="password" autocomplete="off" placeholder="Digite sua senha">
+                      <input type="submit" value="Entrar" class="submit">
+
+                    </form>
+
+                  </div>
+
+
+              </div>
+
+              <div class="card-footer">
+
+                  <input type="submit" value="Entrar" class="submit">
+
+              </div>
+
+              <div class="card-footer">
+
+                  <a class="submit" href="{{ url_for('singup') }}"> Cadastrar </a>
+
+              </div>
+
+          </form>
+
+      </div>
+
+    </body>
+
+</html>
