@@ -15,19 +15,20 @@
   rel="stylesheet">
 </link>
 
-<title>Registre-se</title>
+<title>{{ title }}</title>
 
 <div id="login">
   <form
     class="card"
     method="POST">
-    <div class="card-header"><h2>Registre-se</h2></div>
+    <div class="card-header"><h2>{{ title }}</h2></div>
 
     <div class="card-content">
       <div class="card-content-area">
-        <label for="nome">Nome</label>
+        <label for="nome" style="font: 500 15px sans-serif">Nome</label>
 
         <input
+          value={{nome}}
           id="nome"
           autocomplete="off"
           name="nome"
@@ -35,9 +36,10 @@
       </div>
 
       <div class="card-content-area">
-        <label for="email">Email</label>
+        <label for="email" style="font: 500 15px sans-serif">Email</label>
 
         <input
+          value={{email}}
           id="email"
           autocomplete="off"
           name="email"
@@ -45,9 +47,10 @@
       </div>
 
       <div class="card-content-area">
-        <label for="cpf">CPF</label>
+        <label for="cpf" style="font: 500 15px sans-serif">CPF</label>
 
         <input
+          value={{cpf}}
           id="cpf"
           autocomplete="off"
           name="cpf"
@@ -55,9 +58,10 @@
       </div>
 
       <div class="card-content-area">
-        <label for="pis">PIS</label>
+        <label for="pis" style="font: 500 15px sans-serif">PIS</label>
 
         <input
+          value={{pis}}
           id="pis"
           autocomplete="off"
           name="pis"
@@ -65,9 +69,10 @@
       </div>
 
       <div class="card-content-area">
-        <label for="password">Senha</label>
+        <label for="password" style="font: 500 15px sans-serif">Senha</label>
 
         <input
+          value={{password}}
           id="password"
           autocomplete="off"
           name="password"
@@ -75,9 +80,10 @@
       </div>
 
       <div class="card-content-area">
-        <label for="password2">Digite novamente a senha</label>
+        <label for="password2" style="font: 500 15px sans-serif">Digite novamente a senha</label>
 
         <input
+          value={{password2}}
           id="password2"
           autocomplete="off"
           name="password2"
@@ -87,9 +93,19 @@
 
     <div class="card-footer">
       <input
+        style="font: 500 15px sans-serif"
         class="submit"
         type="submit"
         value="Cadastrar"/>
+    </div>
+
+    <div class="card-footer">
+      <a
+        href="{{ url_for('initial_page_get') }}"
+        style="font: 500 15px sans-serif; letter-spacing: 0.01px; color: #FFFFFF;
+         text-decoration:none">
+        Voltar
+      </a>
     </div>
   </form>
 </div>

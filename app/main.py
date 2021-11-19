@@ -9,8 +9,8 @@ from fastapi.staticfiles import StaticFiles
 app = FastAPI()
 load_dotenv()
 app.mount('/static', StaticFiles(directory='static'), name='static')
-# CORS - Para caso de aplicação com JS
 
+# CORS - Para caso de aplicação com JS
 """
 app.add_middleware(
     CORSMiddleware,

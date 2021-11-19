@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Request, Form
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
-
+from fastapi import status
 
 router = APIRouter(
+    tags=['Tempates'],
     responses={404: {"description": "Not Found"}},
 )
 
@@ -19,13 +20,33 @@ async def initial_page_get(request: Request):
 async def initial_page_post(request: Request, username: str = Form(...), password: str = Form(...)):
     print(username)
     print(password)
-    return templates.TemplateResponse('base.html', {"request":request})
 
+    return RedirectResponse(url='/home', status_code=status.HTTP_302_FOUND)
 
 ######## Cadastro  usuário ###########
 @router.get("/singup", response_class=HTMLResponse)
 async def singup(request: Request):
-    return templates.TemplateResponse('singup.html', {"request":request})
+
+    title = 'Registre-se'
+    nome = ''
+    email = ''
+    cpf = ''
+    pis = ''
+    password = ''
+    password2 = ''
+    if False: #verificar se o usuario existe no banco de dados / chamar a rota 'me'
+        nome = params.get('name', '')
+        title = 'Editar Dados'
+
+    return templates.TemplateResponse(
+        'singup_user.html',
+        {
+        "request":request,
+        "nome":nome, "email":email, "cpf":cpf, "pis": pis,
+        "password": password, "password2": password2, "title": title
+        }
+    )
+
 
 @router.post("/singup", response_class=RedirectResponse, status_code=302)
 async def singup_address(
@@ -46,13 +67,15 @@ async def singup_address(
 
     print(cadastro)
 
-    return "http://localhost:8000/"
+    #return "http://localhost:8000/singup_address"
+    return RedirectResponse(url='/singup_address', status_code=status.HTTP_302_FOUND)
 
 
 ######## Cadastro  endereço ###########
 @router.get("/singup_address", response_class=HTMLResponse)
 async def singup_address(request: Request):
     return templates.TemplateResponse('singup_address.html', {"request":request})
+
 
 @router.post("/singup_address", response_class=RedirectResponse, status_code=302)
 async def singup_address(
@@ -73,6 +96,21 @@ async def singup_address(
                     number = number,
                     complement = complement)
 
-    print(cadastro)
+    print(cadastro_address)
 
-    return "http://localhost:8000/"
+    #return "http://localhost:8000/home"
+    return RedirectResponse(url='/home', status_code=status.HTTP_302_FOUND)
+
+
+################ Page Home #############################
+@router.get("/home", response_class=HTMLResponse)
+async def home(request: Request):
+    return templates.TemplateResponse('home.html',
+            {"request":request, 'username': "Igor Taconi"})
+
+
+############## Edit Address #############################
+
+@router.get("/edit_datas", response_class=HTMLResponse)
+async def edit_datas(request: Request):
+    return templates.TemplateResponse()

@@ -21,14 +21,15 @@
   <form
     class="card"
     method="POST">
-    <div class="card-header"><h2>Login</h2></div>
+    <div class="card-header"><h2>Olá Visitante!</h2></div>
 
     <div class="card-content">
       <div class="card-content-area">
-        <label for="username">Usuário</label>
+        <label for="username" style="font: 500 15px sans-serif">Usuário</label>
 
         <input
           id="username"
+          required
           autocomplete="off"
           name="username"
           type="text"
@@ -36,10 +37,11 @@
       </div>
 
       <div class="card-content-area">
-        <label for="password">Senha</label>
+        <label for="password" style="font: 500 15px sans-serif">Senha</label>
 
         <input
           id="password"
+          required
           autocomplete="off"
           name="password"
           type="password"
@@ -49,6 +51,7 @@
 
     <div class="card-footer">
       <input
+        style="font: 500 15px sans-serif"
         class="submit"
         type="submit"
         value="Entrar"/>
@@ -56,7 +59,7 @@
 
     <div class="card-footer">
       <a
-        class="submit"
+        style="font: 500 15px sans-serif"
         href="{{ url_for('singup') }}">
         Cadastrar
       </a>

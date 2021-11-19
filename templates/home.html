@@ -1,0 +1,50 @@
+<meta charset="UTF-8"></meta>
+
+<meta
+  http-equiv="X-UA-Compatible"
+  content="IE=edge">
+</meta>
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0">
+</meta>
+
+<link
+  href="{{ url_for('static', path ='/style.css')}}"
+  rel="stylesheet">
+</link>
+
+<title>Bem vindo!</title>
+
+<div id="login">
+  <form
+    class="card"
+    method="POST">
+    <div class="card-header"><h2>Olá {{ username }}!</h2></div>
+
+    <div class="card-footer">
+      <input
+        style="font: 500 15px sans-serif"
+        class="submit"
+        type="submit"
+        value="Editar dados do usuário"/>
+    </div>
+
+    <div class="card-footer">
+      <input
+        style="font: 500 15px sans-serif"
+        class="submit"
+        type="submit"
+        value="Editar dados do endereço"/>
+    </div>
+
+    <div class="card-footer">
+      <a
+        style="font: 500 15px sans-serif"
+        href="{{ url_for('initial_page_get') }}">
+        Sair
+      </a>
+    </div>
+  </form>
+</div>

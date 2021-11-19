@@ -36,7 +36,7 @@ body {
 
 .card-header {
 
-    padding-bottom: 50px;
+    padding-bottom: 10px;
 
     opacity: 0.8;
 
@@ -46,9 +46,7 @@ body {
 
 .card-header::after {
 
-    content: "";
-
-    width: 70px;
+    width: 10px;
 
     height: 1px;
 
@@ -78,13 +76,14 @@ body {
 
     flex-direction: column;
 
-    padding:10px 0;
+    padding:20px 0;
+
 
 }
 
 .card-content-area input {
 
-    margin-top: 10px;
+    margin-top: 15px;
 
     padding:0 5px;
 
