@@ -24,25 +24,29 @@
     <div class="card-header"><h2>Olá {{ username }}!</h2></div>
 
     <div class="card-footer">
-      <input
-        style="font: 500 15px sans-serif"
+      <a
+        href="{{ url_for('edit_user') }}"
         class="submit"
-        type="submit"
-        value="Editar dados do usuário"/>
-    </div>
-
-    <div class="card-footer">
-      <input
         style="font: 500 15px sans-serif"
-        class="submit"
-        type="submit"
-        value="Editar dados do endereço"/>
+        type="submit">
+        Editar dados do usuário
+      </a>
     </div>
 
     <div class="card-footer">
       <a
+        href="{{ url_for('edit_address') }}"
+        class="submit"
         style="font: 500 15px sans-serif"
-        href="{{ url_for('initial_page_get') }}">
+        type="submit">
+        Editar dados do endereço
+      </a>
+    </div>
+
+    <div class="card-footer">
+      <a
+        href="{{ url_for('initial_page_get') }}"
+        style="font: 500 15px sans-serif">
         Sair
       </a>
     </div>

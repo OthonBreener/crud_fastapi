@@ -1,0 +1,125 @@
+<meta charset="UTF-8"></meta>
+
+<meta
+  http-equiv="X-UA-Compatible"
+  content="IE=edge">
+</meta>
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0">
+</meta>
+
+<link
+  href="{{ url_for('static', path ='/style.css')}}"
+  rel="stylesheet">
+</link>
+
+<title>{{ title }}</title>
+
+<div id="login">
+  <form
+    class="card"
+    method="POST">
+    <div class="card-header"><h2>{{ title }}</h2></div>
+
+    <div class="card-content">
+      <div class="card-content-area">
+        <label for="nome" style="font: 500 15px sans-serif">Nome</label>
+
+        <input
+          value="{{nome}}"
+          required
+          id="nome"
+          autocomplete="off"
+          name="nome"
+          type="text"/>
+      </div>
+
+      <div class="card-content-area">
+        <label for="email" style="font: 500 15px sans-serif">Email</label>
+
+        <input
+          required
+          value="{{email}}"
+          id="email"
+          autocomplete="off"
+          name="email"
+          type="text"/>
+      </div>
+
+      <div class="card-content-area">
+        <label for="cpf" style="font: 500 15px sans-serif">CPF</label>
+
+        <input
+          required
+          value="{{cpf}}"
+          id="cpf"
+          autocomplete="off"
+          name="cpf"
+          type="text"/>
+      </div>
+
+      <div class="card-content-area">
+        <label for="pis" style="font: 500 15px sans-serif">PIS</label>
+
+        <input
+          required
+          value="{{pis}}"
+          id="pis"
+          autocomplete="off"
+          name="pis"
+          type="text"/>
+      </div>
+
+      <div class="card-content-area">
+        <label for="password" style="font: 500 15px sans-serif">Senha</label>
+
+        <input
+          required
+          value="{{password}}"
+          id="password"
+          autocomplete="off"
+          name="password"
+          type="password"/>
+      </div>
+
+      <div class="card-content-area">
+        <label for="password2" style="font: 500 15px sans-serif">Digite novamente a senha</label>
+
+        <input
+          required
+          value="{{password2}}"
+          id="password2"
+          autocomplete="off"
+          name="password2"
+          type="password"/>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <input
+        style="font: 500 15px sans-serif"
+        class="submit"
+        type="submit"
+        value="Salvar"/>
+    </div>
+
+    <div class="card-footer">
+      <input
+        style="font: 500 15px sans-serif"
+        class="submit"
+        type="submit"
+        value="Excluir Usuário"/>
+    </div>
+
+    <div class="card-footer">
+      <a
+        href="{{ url_for('home') }}"
+        style="font: 500 15px sans-serif; letter-spacing: 0.01px; color: #FFFFFF;
+         text-decoration:none">
+        Voltar
+      </a>
+    </div>
+  </form>
+</div>

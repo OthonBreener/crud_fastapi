@@ -28,6 +28,7 @@
         <label for="country">País</label>
 
         <input
+          style="font: 500 15px sans-serif"
           required
           value="{{country}}"
           id="country"
@@ -40,6 +41,7 @@
         <label for="state">Estado</label>
 
         <input
+          style="font: 500 15px sans-serif"
           required
           value="{{state}}"
           id="state"
@@ -52,6 +54,7 @@
         <label for="city">Cidade</label>
 
         <input
+          style="font: 500 15px sans-serif"
           required
           value="{{city}}"
           id="city"
@@ -64,6 +67,7 @@
         <label for="cep">CEP</label>
 
         <input
+          style="font: 500 15px sans-serif"
           required
           value="{{cep}}"
           id="cep"
@@ -76,6 +80,7 @@
         <label for="street">Rua</label>
 
         <input
+          style="font: 500 15px sans-serif"
           required
           value="{{street}}"
           id="street"
@@ -88,6 +93,7 @@
         <label for="number">Número</label>
 
         <input
+          style="font: 500 15px sans-serif"
           required
           value="{{number}}"
           id="number"
@@ -100,6 +106,7 @@
         <label for="complement">Complemento</label>
 
         <input
+          style="font: 500 15px sans-serif"
           required
           value="{{complement}}"
           id="complement"
@@ -112,9 +119,20 @@
 
     <div class="card-footer">
       <input
+        style="font: 500 15px sans-serif"
         class="submit"
         type="submit"
-        value="Cadastrar"/>
+        value="Salvar"/>
     </div>
+
+    <div class="card-footer">
+      <a
+        href="{{ url_for('home') }}"
+        style="font: 500 15px sans-serif; letter-spacing: 0.01px; color: #FFFFFF;
+         text-decoration:none">
+        Voltar
+      </a>
+    </div>
+
   </form>
 </div>
