@@ -107,6 +107,14 @@ body {
 
 }
 
+.card-foo {
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
 .card-footer .submit{
 
     width: 100%;

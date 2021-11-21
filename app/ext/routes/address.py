@@ -10,18 +10,18 @@ router = APIRouter(
 )
 
 
-@router.post("/", response_model=Address, response_model_exclude_none=True)
+@router.post("/register", response_model=Address, response_model_exclude_none=True)
 async def post_address(address: Address):
     """
     Rota que adiciona o endereço de um usuário
     no banco de dados.
     """
-
+    import ipdb; ipdb.set_trace()
     address_controller.add_address(address)
     return address
 
 
-@router.get("/", response_model=List[Address])
+@router.get("/register", response_model=List[Address])
 async def get_address():
     """
     Rota que busca todos os endereços cadastrados
@@ -32,7 +32,7 @@ async def get_address():
     return address
 
 
-@router.get("/{id}", response_model=List[Address])
+@router.get("/register/{id}", response_model=List[Address])
 async def get_address_by_id(id: int):
     """
     Rota que busca um endereço específico
@@ -43,7 +43,7 @@ async def get_address_by_id(id: int):
     return address
 
 
-@router.get("/{user_id}", response_model=List[Address])
+@router.get("/register/{user_id}", response_model=List[Address])
 async def get_address_by_user_id(user_id: int):
     """
     Rota que busca um endereço pelo id do
@@ -54,7 +54,7 @@ async def get_address_by_user_id(user_id: int):
     return address
 
 
-@router.patch("/", response_model=AddressUpdate, response_model_exclude_none=True)
+@router.patch("/register/update/", response_model=AddressUpdate, response_model_exclude_none=True)
 async def patch_address(id: int, address: AddressUpdate):
     """
     Rota que atualiza um endereço.
@@ -64,7 +64,7 @@ async def patch_address(id: int, address: AddressUpdate):
     return address
 
 
-@router.delete("/")
+@router.delete("/register")
 async def delete_address(id: int):
     """
     Rota que deleta um endereço do banco de dados.

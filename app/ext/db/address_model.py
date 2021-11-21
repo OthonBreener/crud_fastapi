@@ -14,7 +14,7 @@ class Address(SQLModel, table=True):
     CEP: str
     city: str
     street: str
-    number: int
+    number: str
     complement: Optional[str]
     user_id: Optional[int] = Field(default=None, foreign_key="user.id")
 
@@ -69,7 +69,7 @@ class AddressRead(SQLModel):
     CEP: Optional[str]
     city: Optional[str]
     street: Optional[str]
-    number: Optional[int]
+    number: Optional[str]
     complement: Optional[str]
     user_id: Optional[int]
 
@@ -90,7 +90,7 @@ class AddressUpdate(SQLModel):
     CEP: Optional[str]
     city: Optional[str]
     street: Optional[str]
-    number: Optional[int]
+    number: Optional[str]
     complement: Optional[str]
 
     class Config:

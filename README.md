@@ -3,11 +3,16 @@
 uvicorn app.main:app --reload
 ```
 
-## Banco de dados utilizado:
+## Docker
+* Banco de dados utilizado:
 ```
 docker run --name database_postgre -e POSTGRES_PASSWORD=senha -p 5432:5432 -d postgres:14
 ```
 
+* Servidor Redis:
+```
+docker run -d -p 6379:6379 -i -t redis:3.2.5-alpine
+```
 ## Dependencias
 
 * Para instalar todas as dependencias do fastapi:

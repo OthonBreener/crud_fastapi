@@ -1,10 +1,11 @@
+from typing import List
 from fastapi import HTTPException
 from sqlmodel import Session, select
 from app.ext.db import engine
 from app.ext.db.address_model import Address, AddressUpdate
 
 
-def add_address(address: Address):
+def add_address(address: Address) -> Address:
     """
     Método que adiciona o endereço do usuário.
     Input:
@@ -17,7 +18,7 @@ def add_address(address: Address):
         session.refresh(address)
 
 
-def find_address():
+def find_address() -> List[Address]:
     """
     Função que busca todos os endereços
     cadastrados no banco de dados.
@@ -31,7 +32,7 @@ def find_address():
     return results
 
 
-def find_address_by_id(id: int):
+def find_address_by_id(id: int) -> List[Address]:
     """
     Função que busca um endereço através de
     seu id no banco de dados. O método scalars()
@@ -51,7 +52,7 @@ def find_address_by_id(id: int):
     return results
 
 
-def find_address_by_id_user(user_id: int):
+def find_address_by_id_user(user_id: int) -> List[Address]:
     """
     Função que busca um endereço no banco de dados
     através do id do usuário.
@@ -60,6 +61,9 @@ def find_address_by_id_user(user_id: int):
     """
 
     with Session(engine) as session:
+
+        import ipdb; ipdb.set_trace()
+        
         statement = select(Address).where(Address.user_id == user_id)
         result = session.execute(statement)
         results = result.scalars().all()
@@ -69,7 +73,7 @@ def find_address_by_id_user(user_id: int):
     return results
 
 
-def update_address(id: int, address: AddressUpdate):
+def update_address(id: int, address: AddressUpdate) -> AddressUpdate:
     """
     Método que atualiza um endereço no banco de dados,
     o parâmetro 'exclude_unset=True' faz com que apenas
@@ -95,7 +99,7 @@ def update_address(id: int, address: AddressUpdate):
         return db_address
 
 
-def remove_address(id: int):
+def remove_address(id: int) -> str:
     """
     Função que deleta um endereço do banco dados.
     """

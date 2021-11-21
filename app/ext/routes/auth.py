@@ -25,11 +25,14 @@ async def post_user(user: User):
     response_model_exclude_none=True
 )
 async def login_user(user_login: UserLogin):
+    """
+    Rota que loga o usuário no sistema.
+    """
 
     return auth_controller.login(user_login)
 
 
-@router.get("/me", response_model=UserRead)
+@router.get("/me", response_model=List[UserRead])
 def me(user: User = Depends(auth_controller.find_user_active_section)):
     """
     Rota que verifica se o usuário está devidamente logado.

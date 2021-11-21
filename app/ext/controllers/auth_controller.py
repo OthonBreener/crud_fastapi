@@ -86,7 +86,7 @@ def find_user_active_section(token: str = Depends(oauth2_schema)):
     buscar um usuário no banco de dados e retorna-lo.
     """
     exception = HTTPException(status_code=401, detail='Token Inválido!')
-
+    
     try:
         data_login = token_provider.validation_access_token(token)
     except JWTError:
