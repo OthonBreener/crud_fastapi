@@ -36,7 +36,7 @@ def find_users_by_cpf(cpf: str):
     """
 
     with Session(engine) as session:
-        statement = select(User).where(User.CPF == cpf)
+        statement = select(User).where(User.cpf == cpf)
         result = session.exec(statement)
         results = result.all()
 
@@ -49,7 +49,7 @@ def find_users_by_pis(pis: str):
     """
 
     with Session(engine) as session:
-        statement = select(User).where(User.PIS == pis)
+        statement = select(User).where(User.pis == pis)
         result = session.exec(statement)
         results = result.all()
 

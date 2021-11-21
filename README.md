@@ -53,3 +53,8 @@ https://www.4devs.com.br/gerador_de_pis_pasep
 ```
 pip install python-jose[cryptography]
 ```
+
+* Biblioteca necessária para rodar os testes assincronos:
+```
+pip install trio
+```

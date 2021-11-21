@@ -1,6 +1,6 @@
 from typing import List
 from fastapi import APIRouter
-from app.ext.db.address_model import Address, AddressUpdate
+from app.ext.db.address_model import Address, AddressUpdate, AddressRead
 from app.ext.controllers import address_controller
 
 router = APIRouter(
@@ -10,13 +10,13 @@ router = APIRouter(
 )
 
 
-@router.post("/register", response_model=Address, response_model_exclude_none=True)
+@router.post("/register", response_model=AddressRead, response_model_exclude_none=True)
 async def post_address(address: Address):
     """
     Rota que adiciona o endereço de um usuário
     no banco de dados.
     """
-    import ipdb; ipdb.set_trace()
+
     address_controller.add_address(address)
     return address
 

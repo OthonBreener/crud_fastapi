@@ -19,14 +19,14 @@ def add_user(user: User):
     user.senha = hash_provider.generation_hash(user.senha)
     user.senha_repet = hash_provider.generation_hash(user.senha_repet)
 
-    user_exist_cpf = user_controller.find_users_by_cpf(user.CPF)
+    user_exist_cpf = user_controller.find_users_by_cpf(user.cpf)
     if user_exist_cpf:
         raise HTTPException(
                 status_code=400,
                 detail='Já existe um usuário cadastrado com este cpf.'
             )
 
-    user_exist_pis = user_controller.find_users_by_pis(user.PIS)
+    user_exist_pis = user_controller.find_users_by_pis(user.pis)
     if user_exist_pis:
         raise HTTPException(
                 status_code=400,
@@ -54,8 +54,8 @@ def login(user_login: UserLogin):
 
     senha = user_login.senha
     email = user_login.email
-    cpf = user_login.CPF
-    pis = user_login.PIS
+    cpf = user_login.cpf
+    pis = user_login.pis
 
     user_email = user_controller.find_users_by_email(email)
     user_cpf = user_controller.find_users_by_cpf(cpf)
@@ -67,11 +67,11 @@ def login(user_login: UserLogin):
 
     elif user_cpf:
         validation_senha =  hash_provider.verification_hash(user_login.senha, user_cpf[0].senha)
-        token = token_provider.creation_access_token({'sub':user_cpf[0].CPF})
+        token = token_provider.creation_access_token({'sub':user_cpf[0].cpf})
 
     else:
         validation_senha =  hash_provider.verification_hash(user_login.senha, user_pis[0].senha)
-        token = token_provider.creation_access_token({'sub':user_pis[0].PIS})
+        token = token_provider.creation_access_token({'sub':user_pis[0].pis})
 
     if not validation_senha:
         raise HTTPException(status_code=400, detail='Login ou senha incorretos!')
@@ -86,7 +86,7 @@ def find_user_active_section(token: str = Depends(oauth2_schema)):
     buscar um usuário no banco de dados e retorna-lo.
     """
     exception = HTTPException(status_code=401, detail='Token Inválido!')
-    
+
     try:
         data_login = token_provider.validation_access_token(token)
     except JWTError:

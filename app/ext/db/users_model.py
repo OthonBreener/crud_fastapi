@@ -13,14 +13,14 @@ class User(SQLModel, table=True):
     senha_repet: str
     email: EmailStr
     full_name: str
-    CPF: str
-    PIS: str
+    cpf: str
+    pis: str
 
 
     class Config:
         orm_mode = True
 
-    @validator('full_name', 'email', 'CPF', 'PIS', 'senha', 'senha_repet')
+    @validator('full_name', 'email', 'cpf', 'pis', 'senha', 'senha_repet')
     def nenhum_atributo_deve_ser_none(cls, valor):
         """
         Método que verifica se os dados obrigatórios não
@@ -57,7 +57,7 @@ class User(SQLModel, table=True):
         raise ValueError('Senhas diferentes!')
 
 
-    @validator('CPF')
+    @validator('cpf')
     def cpf_deve_ter_digito_de_controle_valido(cls, value):
         """
         Método que valida se o cpf é válido.
@@ -70,7 +70,7 @@ class User(SQLModel, table=True):
 
         return ValueError(f'CPF: {value}  inválido!')
 
-    @validator('PIS')
+    @validator('pis')
     def pis_deve_ter_digito_de_controle_valido(cls, value):
         """
         Método que valida se o pis é válido.
@@ -93,16 +93,16 @@ class UserRead(SQLModel):
     id: Optional[int] = None
     email: Optional[EmailStr] = None
     full_name: Optional[str] = None
-    CPF: Optional[str] = None
-    PIS: Optional[str] = None
+    cpf: Optional[str] = None
+    pis: Optional[str] = None
 
 
 class UserLogin(SQLModel):
 
     senha: str
     email: Optional[EmailStr]
-    CPF: Optional[str]
-    PIS: Optional[str]
+    cpf: Optional[str]
+    pis: Optional[str]
 
 
 class UserLoginSucess(SQLModel):
@@ -122,8 +122,8 @@ class UserUpdate(SQLModel):
     senha_repet: Optional[str] = None
     email: Optional[EmailStr] = None
     full_name: Optional[str] = None
-    CPF: Optional[str] = None
-    PIS: Optional[str] = None
+    cpf: Optional[str] = None
+    pis: Optional[str] = None
 
     class Config:
         orm_mode = True
@@ -155,7 +155,7 @@ class UserUpdate(SQLModel):
         raise ValueError('Senhas diferentes!')
 
 
-    @validator('CPF')
+    @validator('cpf')
     def cpf_deve_ter_digito_de_controle_valido(cls, value):
         """
         Método que valida se o cpf é válido.
@@ -169,7 +169,7 @@ class UserUpdate(SQLModel):
         return ValueError(f'CPF: {value}  inválido!')
 
 
-    @validator('PIS')
+    @validator('pis')
     def pis_deve_ter_digito_de_controle_valido(cls, value):
         """
         Método que valida se o pis é válido.

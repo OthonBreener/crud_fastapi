@@ -29,11 +29,11 @@ async def initial_page_post(
 
     cpf = CPF()
     if cpf.validate(username) is True:
-        login = dict(CPF = username, senha = password)
+        login = dict(cpf = username, senha = password)
 
     pis = PIS()
     if pis.validate(username) is True:
-        login = dict(PIS = username, senha = password)
+        login = dict(pis = username, senha = password)
 
     else:
         login = dict(email = username, senha = password)
@@ -73,8 +73,8 @@ async def teste_cadastro(
 
     cadastro = dict(full_name = nome,
                     email = email,
-                    CPF = cpf,
-                    PIS = pis,
+                    cpf = cpf,
+                    pis = pis,
                     senha = password,
                     senha_repet = password2)
 
@@ -94,7 +94,7 @@ async def teste_cadastro(
         country = country,
         state = state,
         city = city,
-        CEP = cep,
+        cep = cep,
         street = street,
         number = number,
         complement = complement,

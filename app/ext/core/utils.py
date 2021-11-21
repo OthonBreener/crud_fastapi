@@ -1,11 +1,13 @@
 import os
 from httpx import AsyncClient
 
+
 def get_env(data: str):
     """
     Função que busca uma string nas váriaveis de ambiente.
     """
     return os.environ.get(data)
+
 
 async def get_async_client():
     """

@@ -11,18 +11,18 @@ class Address(SQLModel, table=True):
     creation: datetime = Field(default_factory=datetime.now)
     country: str
     state: str
-    CEP: str
+    cep: str
     city: str
     street: str
     number: str
-    complement: Optional[str]
+    complement: str
     user_id: Optional[int] = Field(default=None, foreign_key="user.id")
 
     class Config:
         orm_mode = True
 
 
-    @validator('country', 'state', 'CEP', 'city', 'street', 'number')
+    @validator('country', 'state', 'cep', 'city', 'street', 'number')
     def nenhum_atributo_deve_ser_none(cls, value):
         """
         Método que valida se os dados obrigatórios
@@ -45,7 +45,7 @@ class Address(SQLModel, table=True):
         return value
 
 
-    @validator('CEP')
+    @validator('cep')
     def cep_deve_ser_valido(cls, value):
         """
         Método que valida se o cep inserido é válido.
@@ -64,17 +64,15 @@ class Address(SQLModel, table=True):
 
 class AddressRead(SQLModel):
 
-    country: Optional[str]
-    state: Optional[str]
-    CEP: Optional[str]
-    city: Optional[str]
-    street: Optional[str]
-    number: Optional[str]
-    complement: Optional[str]
-    user_id: Optional[int]
+    country: Optional[str] = None
+    state: Optional[str] = None
+    cep: Optional[str] = None
+    city: Optional[str] = None
+    street: Optional[str] = None
+    number: Optional[str] = None
+    complement: Optional[str] = None
+    user_id: Optional[int] = None
 
-    class Config:
-        orm_mode: True
 
 
 class AddressUpdate(SQLModel):
@@ -87,7 +85,7 @@ class AddressUpdate(SQLModel):
 
     country: Optional[str]
     state: Optional[str]
-    CEP: Optional[str]
+    cep: Optional[str]
     city: Optional[str]
     street: Optional[str]
     number: Optional[str]

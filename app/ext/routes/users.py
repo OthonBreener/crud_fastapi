@@ -10,7 +10,7 @@ router = APIRouter(
     responses={404: {"description": "Not Found"}},
 )
 
-@router.get("/", response_model=List[UserRead])
+@router.get("/get", response_model=List[UserRead])
 async def get_user():
     """
     Rota que busca todos os usuários cadastrados.
@@ -20,7 +20,7 @@ async def get_user():
     return users
 
 
-@router.get("/{id}", response_model=List[UserRead])
+@router.get("/get/{id}", response_model=List[UserRead])
 async def get_user_by_id(id: int):
     """
     Rota que busca um único usuário pelo seu id.
@@ -30,7 +30,7 @@ async def get_user_by_id(id: int):
     return user
 
 
-@router.patch("/", response_model=UserRead, response_model_exclude_none=True)
+@router.patch("/patch", response_model=UserRead, response_model_exclude_none=True)
 async def patch_user(id: int, user: UserUpdate):
     """
     Rota que atualiza os dados de um usuário existente.
@@ -40,7 +40,7 @@ async def patch_user(id: int, user: UserUpdate):
     return user
 
 
-@router.delete("/")
+@router.delete("/delete")
 async def delete_user(id: int):
     """
     Rota que deleta um usuário existente.
