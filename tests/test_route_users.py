@@ -44,7 +44,7 @@ def test_get_user_id_deve_retornar_200_quando_existir_um_user_com_o_id(
 
     assert response.status_code == 200
 
-@mark.skip("Erro 422, olhar depois")
+
 def test_patch_user_deve_retornar_200_quando_os_dados_forem_atualizados_com_sucesso(
     client:TestClient,
     session: Session) -> None:
@@ -60,12 +60,25 @@ def test_patch_user_deve_retornar_200_quando_os_dados_forem_atualizados_com_suce
     session.add(user)
     session.commit()
 
-    response = client.patch("/users/patch/1", json={"full_name": "Othon Marques"})
+    user_update = dict(full_name = "Othon Marques")
+
+    response = client.patch("/users/patch/update/1", json=user_update)
     data = response.json()
 
     assert response.status_code == 200
     assert data["full_name"] == "Othon Marques"
 
+
+def test_patch_user_deve_retornar_404_quando_nao_existir_um_usuario_com_o_id_passado(
+    client:TestClient,
+    session: Session) -> None:
+
+    user_update = dict(full_name = "Othon Marques")
+
+    response = client.patch("/users/patch/update/1", json=user_update)
+    data = response.json()
+
+    assert response.status_code == 404
 
 
 def test_delete_user_deve_retornar_404_quando_o_usuario_nao_existir(

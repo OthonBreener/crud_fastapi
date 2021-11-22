@@ -94,10 +94,11 @@ def remove_address(id: int, session: Session) -> str:
     Função que deleta um endereço do banco dados.
     """
 
-    statement = select(Address).where(Address.id == id)
-    result = session.exec(statement)
-    address = result.one()
-    session.delete(address)
+    statement = session.get(Address, id)
+    if not statement:
+        raise HTTPException(status_code=404, detail="Address not found")
+
+    session.delete(statement)
     session.commit()
 
     return "Endereço deletado com sucesso!"

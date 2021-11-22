@@ -46,7 +46,7 @@ def get_address_by_id(id: int, session: Session = Depends(get_session)):
     return address
 
 
-@router.get("/register/{user_id}", response_model=List[Address])
+@router.get("/register/get_user_id/{user_id}", response_model=List[Address])
 def get_address_by_user_id(user_id: int, session: Session = Depends(get_session)):
     """
     Rota que busca um endereço pelo id do
@@ -57,7 +57,7 @@ def get_address_by_user_id(user_id: int, session: Session = Depends(get_session)
     return address
 
 
-@router.patch("/register/update/", response_model=AddressUpdate, response_model_exclude_none=True)
+@router.patch("/register/update/{id}", response_model=AddressUpdate, response_model_exclude_none=True)
 def patch_address(id: int, address: AddressUpdate, session: Session = Depends(get_session)):
     """
     Rota que atualiza um endereço.
@@ -67,7 +67,7 @@ def patch_address(id: int, address: AddressUpdate, session: Session = Depends(ge
     return address
 
 
-@router.delete("/register")
+@router.delete("/register/delete/{id}")
 def delete_address(id: int, session: Session = Depends(get_session)):
     """
     Rota que deleta um endereço do banco de dados.
