@@ -1,5 +1,7 @@
 import os
-from httpx import AsyncClient
+from httpx import Client
+from sqlmodel import Session
+from app.ext.db import engine
 
 
 def get_env(data: str):
@@ -9,9 +11,14 @@ def get_env(data: str):
     return os.environ.get(data)
 
 
-async def get_async_client():
+def get_client():
     """
     Função que retorna o cliente assíncrono do httpx.
     """
-    async with AsyncClient(base_url = "http://localhost:8000") as client:
+    with Client(base_url = "http://localhost:8000") as client:
         yield client
+
+
+def get_session():
+    with Session(engine) as session:
+        yield session

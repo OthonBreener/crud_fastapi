@@ -45,7 +45,7 @@ class Address(SQLModel, table=True):
         return value
 
 
-    @validator('cep')
+    #@validator('cep')
     def cep_deve_ser_valido(cls, value):
         """
         Método que valida se o cep inserido é válido.

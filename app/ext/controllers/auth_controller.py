@@ -3,7 +3,6 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError
 from sqlmodel import Session, select
 from validate_docbr import PIS, CPF
-from app.ext.db import engine
 from app.ext.db.users_model import User, UserLogin, UserLoginSucess
 from app.ext.providers import hash_provider, token_provider
 from app.ext.controllers import user_controller
@@ -12,38 +11,37 @@ from app.ext.controllers import user_controller
 oauth2_schema = OAuth2PasswordBearer(tokenUrl = 'token')
 
 
-def add_user(user: User):
+def add_user(user: User, session: Session):
     """
     Método que adiciona um novo usuário no banco de dados.
     """
     user.senha = hash_provider.generation_hash(user.senha)
     user.senha_repet = hash_provider.generation_hash(user.senha_repet)
 
-    user_exist_cpf = user_controller.find_users_by_cpf(user.cpf)
+    user_exist_cpf = user_controller.find_users_by_cpf(user.cpf, session)
     if user_exist_cpf:
         raise HTTPException(
                 status_code=400,
                 detail='Já existe um usuário cadastrado com este cpf.'
             )
 
-    user_exist_pis = user_controller.find_users_by_pis(user.pis)
+    user_exist_pis = user_controller.find_users_by_pis(user.pis, session)
     if user_exist_pis:
         raise HTTPException(
                 status_code=400,
                 detail='Já existe um usuário cadastrado com este pis.'
             )
 
-    user_exist_email = user_controller.find_users_by_email(user.email)
+    user_exist_email = user_controller.find_users_by_email(user.email, session)
     if user_exist_email:
         raise HTTPException(
                 status_code=400,
                 detail='Já existe um usuário cadastrado com este email.'
             )
 
-    with Session(engine) as session:
-        session.add(user)
-        session.commit()
-        session.refresh(user)
+    session.add(user)
+    session.commit()
+    session.refresh(user)
 
 
 def login(user_login: UserLogin):

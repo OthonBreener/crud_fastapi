@@ -1,10 +1,10 @@
 import redis, json
-from httpx import AsyncClient
+from httpx import Client
 from fastapi import APIRouter, Request, Form, status, Depends
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from validate_docbr import PIS, CPF
-from app.ext.core.utils import get_async_client
+from app.ext.core.utils import get_client
 
 router = APIRouter(
     tags=['Tempates'],
@@ -25,7 +25,7 @@ async def initial_page_post(
     request: Request,
     username: str = Form(...),
     password: str = Form(...),
-    client: AsyncClient = Depends(get_async_client)):
+    client: Client = Depends(get_client)):
 
     cpf = CPF()
     if cpf.validate(username) is True:
@@ -39,7 +39,7 @@ async def initial_page_post(
         login = dict(email = username, senha = password)
 
 
-    result = await client.post('/auth/signin', json=login, timeout=None)
+    result = client.post('/auth/signin', json=login, timeout=None)
 
     return RedirectResponse(url='/home', status_code=status.HTTP_302_FOUND)
 
@@ -67,7 +67,7 @@ async def teste_cadastro(
     street: str = Form(...),
     number: str = Form(...),
     complement: str = Form(...),
-    client: AsyncClient = Depends(get_async_client)):
+    client: Client = Depends(get_client)):
 
     login = dict(email = email, senha = password)
 
@@ -79,12 +79,12 @@ async def teste_cadastro(
                     senha_repet = password2)
 
 
-    register_datas_user = await client.post("/auth/signup", json=cadastro, timeout=None)
+    register_datas_user = client.post("/auth/signup", json=cadastro, timeout=None)
 
-    logar_usuario = await client.post('/auth/signin', json=login, timeout=None)
+    logar_usuario = client.post('/auth/signin', json=login, timeout=None)
     bearer = logar_usuario.json().get('access_token')
 
-    auth_me = await client.get('/auth/me', headers={'Authorization': 'Bearer ' + bearer}, timeout=None)
+    auth_me = client.get('/auth/me', headers={'Authorization': 'Bearer ' + bearer}, timeout=None)
 
     user_id = auth_me.json()[0].get('id')
     user_name = auth_me.json()[0].get('full_name')
@@ -100,7 +100,7 @@ async def teste_cadastro(
         complement = complement,
         user_id = user_id)
 
-    register_datas_address = await client.post('/address/register', json=cadastro_address, timeout=None)
+    register_datas_address = client.post('/address/register', json=cadastro_address, timeout=None)
 
     return RedirectResponse(url='/home', status_code=status.HTTP_302_FOUND)
 

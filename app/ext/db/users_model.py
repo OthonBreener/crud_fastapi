@@ -162,6 +162,10 @@ class UserUpdate(SQLModel):
         Input:
             value: CPF a ser validado
         """
+
+        if value is None:
+            return value
+
         cpf = CPF()
         if cpf.validate(value) is True:
             return value
@@ -176,6 +180,9 @@ class UserUpdate(SQLModel):
         Input:
             value: PIS a ser validado
         """
+        if value is None:
+            return value
+
         pis = PIS()
         if pis.validate(value) is True:
             return value

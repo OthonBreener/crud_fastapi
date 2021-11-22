@@ -1,8 +1,9 @@
 from typing import List
 from fastapi import APIRouter, Depends
+from sqlmodel import Session
 from app.ext.db.users_model import User, UserUpdate, UserRead, UserLogin, UserLoginSucess
 from app.ext.controllers import auth_controller
-
+from app.ext.core.utils import get_session
 
 router = APIRouter(
     prefix="/auth",
@@ -11,12 +12,12 @@ router = APIRouter(
 )
 
 @router.post("/signup", response_model=UserRead)
-async def post_user(user: User):
+def post_user(user: User, session: Session = Depends(get_session)):
     """
     Rota que adiciona um novo usuário.
     Rota Signup
     """
-    auth_controller.add_user(user)
+    auth_controller.add_user(user, session)
     return user
 
 
@@ -24,7 +25,7 @@ async def post_user(user: User):
     response_model=UserLoginSucess,
     response_model_exclude_none=True
 )
-async def login_user(user_login: UserLogin):
+def login_user(user_login: UserLogin):
     """
     Rota que loga o usuário no sistema.
     """

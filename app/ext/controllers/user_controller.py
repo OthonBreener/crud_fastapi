@@ -1,75 +1,72 @@
 from fastapi import HTTPException
 from sqlmodel import Session, select
-from app.ext.db import engine
 from app.ext.db.users_model import User, UserUpdate, UserLogin
 
-def find_users():
+
+def find_users(session: Session):
     """
     Função que busca todos os usuários cadastrados no
     banco de dados.
     """
 
-    with Session(engine) as session:
-        statement = select(User)
-        result = session.exec(statement)
-        results = result.all()
+    statement = select(User)
+    result = session.exec(statement)
+    results = result.all()
 
     return results
 
 
-def find_users_by_id(id: int):
+def find_users_by_id(id: int, session: Session):
     """
     Função que busca um usuario pelo seu id.
     """
 
-    with Session(engine) as session:
-        statement = select(User).where(User.id == id)
-        result = session.exec(statement)
-        results = result.all()
+    statement = select(User).where(User.id == id)
+    result = session.exec(statement)
+    results = result.all()
+    if not results:
+        raise HTTPException(status_code=404, detail="User not found")
 
     return results
 
 
-def find_users_by_cpf(cpf: str):
+def find_users_by_cpf(cpf: str, session: Session):
     """
     Função que busca um usuário pelo cpf.
     """
 
-    with Session(engine) as session:
-        statement = select(User).where(User.cpf == cpf)
-        result = session.exec(statement)
-        results = result.all()
+    statement = select(User).where(User.cpf == cpf)
+    result = session.exec(statement)
+    results = result.all()
 
     return results
 
 
-def find_users_by_pis(pis: str):
+def find_users_by_pis(pis: str, session: Session):
     """
     Função que busca um usuário pelo PIS.
     """
 
-    with Session(engine) as session:
-        statement = select(User).where(User.pis == pis)
-        result = session.exec(statement)
-        results = result.all()
+    statement = select(User).where(User.pis == pis)
+    result = session.exec(statement)
+    results = result.all()
 
     return results
 
 
-def find_users_by_email(email: str):
+def find_users_by_email(email: str, session: Session):
     """
     Função que busca um usuário pelo email.
     """
 
-    with Session(engine) as session:
-        statement = select(User).where(User.email == email)
-        result = session.exec(statement)
-        results = result.all()
+    statement = select(User).where(User.email == email)
+    result = session.exec(statement)
+    results = result.all()
 
     return results
 
 
-def update_users(id: int, user: UserUpdate):
+def update_users(id: int, user: UserUpdate, session: Session) -> UserUpdate:
     """
     Função que atualiza um usuário no banco de dados,
     utilizando o exclude=True para incluir apenas os
@@ -79,32 +76,31 @@ def update_users(id: int, user: UserUpdate):
         user: Request com os dados a serem atualizados
     """
 
-    with Session(engine) as session:
-        db_user = session.get(User, id)
-        if not db_user:
-            raise HTTPException(status_code=404, detail="User not found")
+    db_user = session.get(User, id)
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
 
-        user_data = user.dict(exclude_unset=True)
-        for key, value in user_data.items():
-            setattr(db_user, key, value)
+    user_data = user.dict(exclude_unset=True)
+    for key, value in user_data.items():
+        setattr(db_user, key, value)
 
-        session.add(db_user)
-        session.commit()
-        session.refresh(db_user)
+    session.add(db_user)
+    session.commit()
+    session.refresh(db_user)
 
-        return db_user
+    return db_user
 
 
-def remove_users(id: int):
+def remove_users(id: int, session: Session):
     """
     Função que deleta um usuário do banco de dados.
     """
 
-    with Session(engine) as session:
-        statement = select(User).where(User.id == id)
-        result = session.exec(statement)
-        user = result.one()
-        session.delete(user)
-        session.commit()
+    statement = session.get(User, id)
+    if not statement:
+        raise HTTPException(status_code=404, detail="User not found")
 
-    return "Usuário deletado com sucesso!"
+    session.delete(statement)
+    session.commit()
+
+    return {"mensagem":"Usuário deletado com sucesso!"}

@@ -1,27 +1,35 @@
 import pytest
 from unittest.mock import patch
+from fastapi.testclient import TestClient
 from sqlmodel import Session, SQLModel, create_engine
+from sqlalchemy_utils import database_exists, drop_database
 from sqlmodel.pool import StaticPool
 from typing import Generator
-from httpx import AsyncClient
-from asyncio import get_event_loop
-from app.ext.db import engine
 from app.main import app
+from app.ext.core.utils import get_session
 
-@pytest.fixture
-async def async_client() -> Generator:
+@pytest.fixture(name="session")
+def session_fixture():
 
-    fake_sqlite = 'sqlite:///database_fake.db'
-    with patch('app.ext.db.db_url', new=fake_sqlite):
-        SQLModel.metadata.drop_all(bind=engine)
-        SQLModel.metadata.create_all(bind=engine)
+    engine = create_engine(
+        'sqlite:///database_fake.db',
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool
+    )
 
-        async with AsyncClient(app=app, base_url= "http://localhost:8000") as client:
-            yield client
+    SQLModel.metadata.create_all(engine)
+    with Session(engine) as session:
+        yield session
+
+    drop_database('sqlite:///database_fake.db')
 
 
-@pytest.fixture(scope="module")
-def event_loop():
+@pytest.fixture(name="client")
+def client_fixture(session: Session):
+    def get_session_override():
+        return session
 
-    loop = get_event_loop()
-    yield loop
+    app.dependency_overrides[get_session] = get_session_override
+    client = TestClient(app)
+    yield client
+    app.dependency_overrides.clear()
