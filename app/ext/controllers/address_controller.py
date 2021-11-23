@@ -3,6 +3,7 @@ from fastapi import HTTPException, Depends
 from sqlmodel import Session, select
 from app.ext.db.address_model import Address, AddressUpdate
 
+
 def add_address(address: Address, session: Session) -> Address:
     """
     Método que adiciona o endereço do usuário.

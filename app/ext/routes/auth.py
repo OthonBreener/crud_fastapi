@@ -25,16 +25,19 @@ def post_user(user: User, session: Session = Depends(get_session)):
     response_model=UserLoginSucess,
     response_model_exclude_none=True
 )
-def login_user(user_login: UserLogin):
+def login_user(user_login: UserLogin, session: Session = Depends(get_session)):
     """
     Rota que loga o usuário no sistema.
     """
 
-    return auth_controller.login(user_login)
+    return auth_controller.login(user_login, session)
 
 
 @router.get("/me", response_model=List[UserRead])
-def me(user: User = Depends(auth_controller.find_user_active_section)):
+def me(
+    user: User = Depends(auth_controller.find_user_active_section),
+    session: Session = Depends(get_session)
+    ):
     """
     Rota que verifica se o usuário está devidamente logado.
     """

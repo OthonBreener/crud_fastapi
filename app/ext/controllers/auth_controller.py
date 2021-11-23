@@ -6,7 +6,7 @@ from validate_docbr import PIS, CPF
 from app.ext.db.users_model import User, UserLogin, UserLoginSucess
 from app.ext.providers import hash_provider, token_provider
 from app.ext.controllers import user_controller
-
+from app.ext.core.utils import get_session
 
 oauth2_schema = OAuth2PasswordBearer(tokenUrl = 'token')
 
@@ -44,7 +44,7 @@ def add_user(user: User, session: Session):
     session.refresh(user)
 
 
-def login(user_login: UserLogin):
+def login(user_login: UserLogin, session: Session):
     """
     Rota que autentifica um usuário,
     podendo este logar por email, cpf ou pis mais senha.
@@ -55,9 +55,9 @@ def login(user_login: UserLogin):
     cpf = user_login.cpf
     pis = user_login.pis
 
-    user_email = user_controller.find_users_by_email(email)
-    user_cpf = user_controller.find_users_by_cpf(cpf)
-    user_pis = user_controller.find_users_by_pis(pis)
+    user_email = user_controller.find_users_by_email(email, session)
+    user_cpf = user_controller.find_users_by_cpf(cpf, session)
+    user_pis = user_controller.find_users_by_pis(pis, session)
 
     if user_email:
         validation_senha =  hash_provider.verification_hash(user_login.senha, user_email[0].senha)
@@ -77,7 +77,10 @@ def login(user_login: UserLogin):
     return UserLoginSucess(user=user_login, access_token=token)
 
 
-def find_user_active_section(token: str = Depends(oauth2_schema)):
+def find_user_active_section(
+    token: str = Depends(oauth2_schema),
+    session: Session = Depends(get_session),
+    ):
     """
     Função responsável por decodificar um token jwt e pegar o dado
     de login (variando entre email, cpf e pis), com esse dado validado,
@@ -96,20 +99,20 @@ def find_user_active_section(token: str = Depends(oauth2_schema)):
     cpf = CPF()
     if cpf.validate(data_login) is True:
 
-        user_cpf = user_controller.find_users_by_cpf(data_login)
+        user_cpf = user_controller.find_users_by_cpf(data_login, session)
         if not user_cpf:
             raise exception
         return user_cpf
 
     pis = PIS()
     if pis.validate(data_login) is True:
-        user_pis = user_controller.find_users_by_pis(data_login)
+        user_pis = user_controller.find_users_by_pis(data_login, session)
         if not user_pis:
             raise exception
         return user_pis
 
     else:
-        user_email = user_controller.find_users_by_email(data_login)
+        user_email = user_controller.find_users_by_email(data_login, session)
         if not user_email:
             raise exception
         return user_email

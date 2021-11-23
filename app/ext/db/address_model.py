@@ -45,21 +45,15 @@ class Address(SQLModel, table=True):
         return value
 
 
-    #@validator('cep')
+    @validator('cep')
     def cep_deve_ser_valido(cls, value):
         """
         Método que valida se o cep inserido é válido.
         """
 
-        try:
-            address = get_address_from_cep(value, webservice=WebService.APICEP)
-            return address.get('cep')
-
-        except exceptions.InvalidCEP as eic:
-            return eic
-
-        except exceptions.CEPNotFound as ecnf:
-            return ecnf
+        if 8 <= len(value) <= 9:
+            return value
+        raise ValueError(f'O campo {value} está incorreto!')
 
 
 class AddressRead(SQLModel):
@@ -103,3 +97,16 @@ class AddressUpdate(SQLModel):
         elif len(value) < 2:
             raise ValueError(f'O campo {value} deve ser maior que dois caracteres')
         return value
+
+    @validator('cep')
+    def cep_deve_ser_valido(cls, value):
+        """
+        Método que valida se o cep inserido é válido.
+        """
+        if value is None:
+            return value
+
+        if 8 <= len(value) <= 9:
+            return value
+            
+        raise ValueError(f'O campo {value} está incorreto!')

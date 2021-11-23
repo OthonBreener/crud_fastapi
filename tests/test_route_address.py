@@ -1,3 +1,4 @@
+from typing import Dict
 from pytest import mark
 from unittest.mock import patch
 from fastapi import Depends
@@ -6,7 +7,7 @@ from sqlmodel import Session
 from app.ext.db.users_model import User
 from app.ext.db.address_model import Address
 
-def add_address_mock(address: dict, _ ) -> dict:
+def add_address_mock(address: Dict[str, str], _ ) -> Dict[str, str]:
     return address
 
 ######### usando o mock para mocar o banco de dados ###################
@@ -133,7 +134,7 @@ def test_get_addres_id_deve_retorna_200_quando_existir_um_cadastro_com_o_id_pass
     session: Session) -> None:
 
     address = Address(
-        cep = "38.950-000",
+        cep = "38950-000",
         country = "Brasil",
         state = "MG",
         city = "Ibia",
@@ -180,7 +181,7 @@ def test_get_address_by_user_id_deve_retornar_200_quando_buscar_um_endereco_pelo
     session.commit()
 
     address = Address(
-        cep = "38.950-000",
+        cep = "38950-000",
         country = "Brasil",
         state = "MG",
         city = "Ibia",
@@ -202,7 +203,7 @@ def test_get_address_by_user_id_deve_retornar_404_quando_nao_encontrar_um_endere
     session: Session) -> None:
 
     address = Address(
-        cep = "38.950-000",
+        cep = "38950-000",
         country = "Brasil",
         state = "MG",
         city = "Ibia",
@@ -234,6 +235,24 @@ def test_post_address_deve_retornar_422_quando_algum_dado_obrigatorio_estiver_fa
         )
 
     response = client.post("/address/register", json=params, timeout=None)
+    assert response.status_code == 422
+
+@mark.task
+def test_post_address_deve_retornar_422_se_o_cep_nao_tiver_o_tamanho_certo(
+    client: TestClient
+    ) -> None:
+
+    params = dict(
+        cep = "389000",
+        country = "Brasil",
+        state = "MG",
+        city = "Ibia",
+        street = "54",
+        number = "87",
+        complement = "Qualquer"
+        )
+
+    response = client.post("/address/register", json=params)
     assert response.status_code == 422
 
 

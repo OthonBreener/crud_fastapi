@@ -5,23 +5,26 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from validate_docbr import PIS, CPF
 from app.ext.core.utils import get_client
+from config import TEMPLATE_FOLDER
 
 router = APIRouter(
     tags=['Tempates'],
     responses={404: {"description": "Not Found"}},
 )
 
-templates = Jinja2Templates(directory='templates')
+templates = Jinja2Templates(directory=TEMPLATE_FOLDER)
 
 redis_client = redis.Redis(host='localhost', port='6379', db=0)
+
 ##################### Login ##########################
+
 @router.get("/", response_class=HTMLResponse)
-async def initial_page_get(request: Request):
+def initial_page_get(request: Request):
     return templates.TemplateResponse('base.html', {"request":request})
 
 
 @router.post("/", response_class=HTMLResponse)
-async def initial_page_post(
+def initial_page(
     request: Request,
     username: str = Form(...),
     password: str = Form(...),
@@ -38,21 +41,39 @@ async def initial_page_post(
     else:
         login = dict(email = username, senha = password)
 
-
     result = client.post('/auth/signin', json=login, timeout=None)
+    if result.status_code == 200:
+        token = result.json()['access_token']
+        redis_client.set('token', token)
 
-    return RedirectResponse(url='/home', status_code=status.HTTP_302_FOUND)
+        return RedirectResponse(url='/home', status_code=status.HTTP_302_FOUND)
+
+    return templates.TemplateResponse('base.html', {"request":request})
+
+####################### Page Home #########################################
+@router.get("/home", response_class=HTMLResponse)
+def home(request: Request, client: Client = Depends(get_client)):
+
+    token = redis_client.get('token')
+    bearer = token.decode('utf-8')
+
+    response = client.get('/auth/me', headers = {'Authorization': 'Bearer ' + bearer})
+    data = response.json()
+    name = data[0].get('full_name')
+
+    return templates.TemplateResponse('home.html',
+            {"request":request, 'username': name})
 
 ##################### Cadastro  usuário ########################
 
 @router.get("/singnup", response_class=HTMLResponse)
-async def teste_cadastro(request: Request):
+def singnup(request: Request):
 
     return templates.TemplateResponse('singnup.html', {"request": request})
 
 
 @router.post("/singnup", response_class=RedirectResponse, status_code=302)
-async def teste_cadastro(
+def singnup(
     request: Request,
     nome: str = Form(...),
     email: str = Form(...),
@@ -104,59 +125,98 @@ async def teste_cadastro(
 
     return RedirectResponse(url='/home', status_code=status.HTTP_302_FOUND)
 
-
-####################### Page Home #########################################
-@router.get("/home", response_class=HTMLResponse)
-async def home(request: Request):
-
-    user = json.loads(redis_client.get('user_name'))
-    return templates.TemplateResponse('home.html',
-            {"request":request, 'username': user})
-
-
 #################### Pagina de edição de dados do usuário ###################
-@router.get("/user_datas", response_class=HTMLResponse)
-async def edit_user(request: Request):
+@router.get("/edit_datas", response_class=HTMLResponse)
+def edit_user(request: Request, client: Client = Depends(get_client)):
 
-    params = []
+    token = redis_client.get('token')
+    bearer = token.decode('utf-8')
+    response = client.get('/auth/me', headers = {'Authorization': 'Bearer ' + bearer})
 
-    title = 'Dados do Usuário'
-    nome = ''
-    email = ''
-    cpf = ''
-    pis = ''
-    password = ''
-    password2 = ''
-    country = ''
-    state = ''
-    city = ''
-    cep = ''
-    street = ''
-    number = ''
-    complement = ''
+    data = response.json()
+    user_id = data[0].get('id')
 
-    if params:
-        nome = params.get('name')
-        email = params.get('email')
-        cpf = params.get('cpf')
-        pis = params.get('pis')
-        password = params.get('password')
-        password2 = params.get('password2')
-        country = address.get('country')
-        state = address.get('state')
-        city = address.get('city')
-        cep = address.get('CEP')
-        street = address.get('street')
-        number = address.get('number')
-        complement = address.get('complement')
+    response_user = client.get(f'/users/get/{user_id}')
+    response_address = client.get(f'/address/register/get_user_id/{user_id}')
 
-    return templates.TemplateResponse(
-        'edit_user.html',
-        {
-            "request":request,
-            "nome":nome, "email":email, "cpf":cpf, "pis": pis,
-            "password": password, "password2": password2, "title": title,
-            "request":request, "country":country, "state":state, "city":city,
-            "cep":cep, "street":street, "number":number, "complement":complement
-        }
-    )
+    params_user = response_user.json()[0]
+    params_address = response_address.json()[0]
+
+    if response_user.status_code == 200:
+
+        nome = params_user.get('full_name')
+        email = params_user.get('email')
+        cpf = params_user.get('cpf')
+        pis = params_user.get('pis')
+        password = params_user.get('password')
+        password2 = params_user.get('password2')
+        country = params_address.get('country')
+        state = params_address.get('state')
+        city = params_address.get('city')
+        cep = params_address.get('cep')
+        street = params_address.get('street')
+        number = params_address.get('number')
+        complement = params_address.get('complement')
+
+        return templates.TemplateResponse(
+            'edit_datas.html',
+            {
+                "request":request,
+                "nome":nome, "email":email, "cpf":cpf, "pis": pis,
+                "password": password, "password2": password2, "country":country,
+                "state":state, "city":city, "cep":cep, "street":street, "number":number,
+                "complement":complement
+            }
+        )
+
+
+@router.post("/edit_datas", response_class=RedirectResponse, status_code=302)
+def singnup(
+    request: Request,
+    nome: str = Form(...),
+    email: str = Form(...),
+    cpf: str = Form(...),
+    pis: str = Form(...),
+    password: str = Form(...),
+    password2: str = Form(...),
+    country: str = Form(...),
+    state: str = Form(...),
+    city: str = Form(...),
+    cep: str = Form(...),
+    street: str = Form(...),
+    number: str = Form(...),
+    complement: str = Form(...),
+    client: Client = Depends(get_client)):
+
+    token = redis_client.get('token')
+    bearer = token.decode('utf-8')
+    auth_me = client.get('/auth/me', headers={'Authorization': 'Bearer ' + bearer}, timeout=None)
+    user_id = auth_me.json()[0].get('id')
+
+    import ipdb; ipdb.set_trace()
+
+    cadastro = dict(full_name = nome,
+                    email = email,
+                    cpf = cpf,
+                    pis = pis)
+
+    register_datas_user = client.patch(
+        f"/auth/patch/update/{user_id}",
+        json=cadastro)
+
+    get_address_id = client.get(f"/address/register/get_user_id/{user_id}")
+    id_address = get_address_id.json()[0].get('id')
+
+    cadastro_address = dict(
+        country = country,
+        state = state,
+        city = city,
+        cep = cep,
+        street = street,
+        number = number,
+        complement = complement)
+
+    register_datas_address = client.patch(f'/address/register/update/{id_address}',
+        json=cadastro_address)
+
+    return RedirectResponse(url='/home', status_code=status.HTTP_302_FOUND)

@@ -2,11 +2,12 @@ import pytest
 from unittest.mock import patch
 from fastapi.testclient import TestClient
 from sqlmodel import Session, SQLModel, create_engine
-from sqlalchemy_utils import database_exists, drop_database
+from sqlalchemy_utils import drop_database
 from sqlmodel.pool import StaticPool
 from typing import Generator
 from app.main import app
 from app.ext.core.utils import get_session
+
 
 @pytest.fixture(name="session")
 def session_fixture():
