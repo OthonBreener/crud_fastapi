@@ -100,6 +100,7 @@ class UserRead(SQLModel):
 class UserLogin(SQLModel):
 
     senha: str
+    id: Optional[int]
     email: Optional[EmailStr]
     cpf: Optional[str]
     pis: Optional[str]

@@ -1,0 +1,56 @@
+<meta charset="UTF-8"></meta>
+
+<meta
+  http-equiv="X-UA-Compatible"
+  content="IE=edge">
+</meta>
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0">
+</meta>
+
+<link
+  href="{{ url_for('static', path ='/style.css')}}"
+  rel="stylesheet">
+</link>
+
+<title>Exluir Conta</title>
+
+<div id="login">
+  <form
+    class="card"
+    method="POST">
+    <div class="card-header"><h2>Olá {{ name }}</h2></div>
+
+    <div class="card-header"><h3>Tem certeza que deseja excluir sua conta ?</h3></div>
+
+    <div class="card-content-area">
+      <label for="password" style="font: 500 15px sans-serif">Senha</label>
+
+      <input
+        id="password"
+        required
+        autocomplete="off"
+        name="password"
+        type="password"
+        placeholder="Digite sua senha"/>
+    </div>
+
+    <div class="card-footer">
+      <input
+        style="font: 500 15px sans-serif"
+        class="submit"
+        type="submit"
+        value="Deletar Conta"/>
+    </div>
+
+    <div class="card-footer">
+      <a
+        style="font: 500 15px sans-serif"
+        href="{{ url_for('home') }}">
+        Voltar
+      </a>
+    </div>
+  </form>
+</div>

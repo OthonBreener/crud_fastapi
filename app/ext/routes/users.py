@@ -31,6 +31,15 @@ def get_user_by_id(id: int, session: Session = Depends(get_session)):
     return user
 
 
+@router.get("/get_pass/{email}", response_model=List[UserLogin])
+def get_user_by_template(email: str, session: Session = Depends(get_session)):
+    """
+    Rota que retornar as informações do usuário
+    para efetuar o delete pelo template.
+    """
+    user = user_controller.find_user_and_password(email, session)
+    return user
+
 @router.patch("/patch/update/{id}", response_model=UserRead, response_model_exclude_none=True)
 def patch_user(id: int, user: UserUpdate, session: Session = Depends(get_session)):
     """

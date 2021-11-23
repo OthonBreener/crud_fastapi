@@ -66,6 +66,19 @@ def find_users_by_email(email: str, session: Session):
     return results
 
 
+def find_user_and_password(email: str, session: Session):
+    """
+    Função que busca o password do user
+    para confirmar o delete na rota de template.
+    """
+
+    statement = select(User).where(User.email == email)
+    result = session.exec(statement)
+    results = result.all()
+
+    return results
+
+
 def update_users(id: int, user: UserUpdate, session: Session) -> UserUpdate:
     """
     Função que atualiza um usuário no banco de dados,

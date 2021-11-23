@@ -55,6 +55,9 @@
         type="submit"
         value="Entrar"/>
     </div>
+    {% if menssage %}
+        <script> alert({{ menssage }})</script>
+    {% endif %}
 
     <div class="card-footer">
       <a
