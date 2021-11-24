@@ -19,7 +19,6 @@ def post_address(address: Address,  session: Session = Depends(get_session)):
     Rota que adiciona o endereço de um usuário
     no banco de dados.
     """
-
     address_controller.add_address(address, session)
     return address
 

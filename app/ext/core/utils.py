@@ -14,7 +14,7 @@ def get_env(data: str):
 
 def get_client():
     """
-    Função que retorna o cliente assíncrono do httpx.
+    Função que retorna o cliente do httpx.
     """
     with Client(base_url = "http://localhost:8000") as client:
         yield client

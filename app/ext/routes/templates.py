@@ -34,17 +34,10 @@ def initial_page(
     result = client.post('/auth/signin', json=login, timeout=None)
     if result.status_code == 200:
 
-        email = result.json()['user'].get('email')
         token = result.json()['access_token']
-        response = client.get('/auth/me', headers = {'Authorization': 'Bearer ' + token})
-        name = response.json()[0].get('full_name')
-
-        session_data = dict(full_name = name, token = token, email = email)
-        response_session = client.post('/session/create_session', json = session_data)
-
-        client_redis.set('token', token, ex=1200)
-
-        return RedirectResponse(url='/home', status_code=status.HTTP_302_FOUND)
+        redirect = RedirectResponse(url='/home', status_code=status.HTTP_302_FOUND)
+        redirect.set_cookie('my_cookie', value=token)
+        return redirect
 
     return templates.TemplateResponse(
         'base.html',
@@ -54,22 +47,29 @@ def initial_page(
 @router.get("/home", response_class=HTMLResponse)
 def home(request: Request, client: Client = Depends(get_client)):
 
-    token = client_redis.get('token')
+    token = request.cookies.get('my_cookie')
     if not token:
         return templates.TemplateResponse('base.html',{"request":request})
 
-    token = client_redis.get('token').decode('utf-8')
     auth_me = client.get('/auth/me', headers = {'Authorization': 'Bearer ' + token})
     if auth_me.status_code != 200:
         return templates.TemplateResponse('base.html',{"request":request})
 
-    creation_session_data(token, client)
     name = auth_me.json()[0].get('full_name')
 
     return templates.TemplateResponse('home.html',
             {"request":request, 'username': name})
 
-##################### Cadastro  usuário ########################
+##################### Rota para deslogar ############################
+
+@router.get("/logout", response_class=RedirectResponse, status_code=302)
+def logout(request: Request):
+
+    redirect = RedirectResponse('/', status_code=status.HTTP_302_FOUND)
+    redirect.delete_cookie('my_cookie')
+    return redirect
+
+##################### Cadastro  usuário #############################
 
 @router.get("/singnup", response_class=HTMLResponse)
 def singnup(request: Request):
@@ -105,18 +105,10 @@ def singnup(
                     senha_repet = password2)
 
     register_datas_user = client.post("/auth/signup", json=cadastro, timeout=None)
+
     logar_usuario = client.post('/auth/signin', json=login, timeout=None)
-
-    email = logar_usuario.json()['user'].get('email')
     token = logar_usuario.json()['access_token']
-    client_redis.set('token', token, ex=1200)
-
-    auth_me = client.get('/auth/me', headers = {'Authorization': 'Bearer ' + token})
-    name = auth_me.json()[0].get('full_name')
-
-    session_data = dict(full_name = name, token = token, email = email)
-    response_session = client.post('/session/create_session', json = session_data)
-    user_id = auth_me.json()[0].get('id')
+    user_id = register_datas_user.json()['id']
 
     cadastro_address = dict(
         country = country,
@@ -130,19 +122,23 @@ def singnup(
 
     register_datas_address = client.post('/address/register', json=cadastro_address)
 
-    return RedirectResponse(url='/home', status_code=status.HTTP_302_FOUND)
+    redirect = RedirectResponse(url='/home', status_code=status.HTTP_302_FOUND)
+    redirect.set_cookie(key = 'my_cookie', value=token)
+
+    return redirect
 
 #################### Pagina de edição de dados do usuário ###################
 @router.get("/edit_datas", response_class=HTMLResponse)
 def edit_user(request: Request, client: Client = Depends(get_client)):
 
-    token = client_redis.get('token').decode('utf-8')
+    token = request.cookies.get('my_cookie')
+    if not token:
+        return templates.TemplateResponse('base.html',{"request":request})
+
     auth_me = client.get('/auth/me', headers = {'Authorization': 'Bearer ' + token})
     if auth_me.status_code != 200:
         return templates.TemplateResponse('base.html', {"request": request})
 
-    creation_session_data(token, client)
-    name = auth_me.json()[0].get('full_name')
     user_id = auth_me.json()[0].get('id')
 
     response_user = client.get(f'/users/get/{user_id}')
@@ -194,11 +190,9 @@ def singnup(
     complement: str = Form(...),
     client: Client = Depends(get_client)):
 
-
-    token = client_redis.get('token').decode('utf-8')
+    token = request.cookies.get('my_cookie')
     response = client.get('/auth/me', headers = {'Authorization': 'Bearer ' + token})
     user_id = response.json()[0].get('id')
-
 
     cadastro = dict(full_name = nome,
                     email = email,
@@ -207,7 +201,6 @@ def singnup(
                     senha = password,
                     senha_repet = password2)
 
-    import ipdb; ipdb.set_trace()
     register_datas_user = client.patch(f"/users/patch/update/{user_id}",
         json=cadastro)
 
@@ -234,14 +227,15 @@ def singnup(
 @router.get('/delete', response_class=HTMLResponse)
 def delete_user(request: Request, client: Client = Depends(get_client)):
 
-    token = client_redis.get('token').decode('utf-8')
+    token = request.cookies.get('my_cookie')
+    if not token:
+        return templates.TemplateResponse('base.html', {"request":request})
+
     auth_me = client.get('/auth/me', headers = {'Authorization': 'Bearer ' + token})
     if auth_me.status_code != 200:
         return templates.TemplateResponse('base.html', {"request":request})
 
-    creation_session_data(token, client)
     name = auth_me.json()[0].get('full_name')
-
     return templates.TemplateResponse('delete.html',
         {"request":request, "name": name})
 
@@ -251,7 +245,10 @@ def delete_user(request: Request,
     password: str = Form(...),
     client: Client = Depends(get_client)):
 
-    token = client_redis.get('token').decode('utf-8')
+    token = request.cookies.get('my_cookie')
+    if not token:
+        return templates.TemplateResponse('base.html', {"request":request})
+
     response = client.get('/auth/me', headers = {'Authorization': 'Bearer ' + token})
     email = response.json()[0].get('email')
     user_id = response.json()[0].get('id')
@@ -261,17 +258,17 @@ def delete_user(request: Request,
 
     if verification_hash(password, senha_hash) is True:
 
-        # deleta a seção do usuário e o usuário do banco de dados
         address = client.get(f'/address/register/get_user_id/{user_id}')
         address_id = address.json()[0].get('id')
 
-        session_delte_address = client.delete(f'/address/register/delete/{address_id}')
-        session_delte_user = client.delete(f'/users/delete/{user_id}')
-        if session_delte_user.status_code == 200:
-            client_redis.delete('token')
-            response_delete_session = client.post('/session/delete_session')
-            return templates.TemplateResponse('base.html', {"request":request})
+        delete_address = client.delete(f'/address/register/delete/{address_id}')
+        delete_user = client.delete(f'/users/delete/{user_id}')
 
-        return templates.TemplateResponse('edit_datas.html', {"request":request})
+        if delete_user.status_code == 200:
+            redirect = RedirectResponse(url='/', status_code=status.HTTP_302_FOUND)
+            redirect.delete_cookie('my_cookie')
+            return redirect
 
-    return templates.TemplateResponse('edit_datas.html', {"request":request})
+        return templates.TemplateResponse('base.html', {"request":request})
+
+    return templates.TemplateResponse('delete.html', {"request":request})
