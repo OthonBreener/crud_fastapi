@@ -84,7 +84,7 @@ def test_post_address_deve_retornar_200_e_os_mesmo_dados_de_entrada(
 def test_post_address_deve_retornar_200_quando_o_id_do_usuario_nao_for_passado(client: TestClient) -> None:
 
     address = dict(
-        cep = "3",
+        cep = "38950000",
         country = "Brasil",
         state = "MG",
         city = "Ibia",
@@ -93,18 +93,8 @@ def test_post_address_deve_retornar_200_quando_o_id_do_usuario_nao_for_passado(c
         complement = "Qualquer"
         )
 
-    user = dict(
-        full_name = "Othon breener",
-        email = "othon@gmail.com",
-        cpf = "366.350.660-63",
-        pis = "538.40181.27-3",
-        senha = "othon123",
-        senha_repet = "othon123"
-        )
-
-    response_user = client.post("/auth/singnup", json=user, timeout=None)
     response = client.post("/address/register", json=address, timeout=None)
-
+    print(response.json())
     assert response.status_code == 200
 
 
@@ -237,7 +227,6 @@ def test_post_address_deve_retornar_422_quando_algum_dado_obrigatorio_estiver_fa
     response = client.post("/address/register", json=params, timeout=None)
     assert response.status_code == 422
 
-@mark.task
 def test_post_address_deve_retornar_422_se_o_cep_nao_tiver_o_tamanho_certo(
     client: TestClient
     ) -> None:

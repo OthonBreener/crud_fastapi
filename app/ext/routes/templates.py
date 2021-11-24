@@ -5,11 +5,14 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from app.ext.core.utils import get_client
 from app.ext.controllers.templates_controller import (
-    verification_type_login,
     register_user_and_address,
-    delete_user_and_address
+    delete_user_and_address_post,
+    delete_user_and_address_get,
+    edit_users_and_address_post,
+    edit_users_and_address_get,
+    initial_page_template,
+    page_home
 )
-
 from config import TEMPLATE_FOLDER
 
 router = APIRouter(
@@ -34,37 +37,14 @@ def initial_page(
     password: str = Form(...),
     client: Client = Depends(get_client)):
 
-    login = verification_type_login(username, password)
-
-    result = client.post('/auth/signin', json=login, timeout=None)
-    if result.status_code == 200:
-
-        token = result.json()['access_token']
-        redirect = RedirectResponse(url='/home', status_code=status.HTTP_302_FOUND)
-        redirect.set_cookie('my_cookie', value=token)
-        return redirect
-
-    return templates.TemplateResponse(
-        'base.html',
-        {"request": request})
+    return initial_page_template(request, username, password, client)
 
 ####################### Page Home #########################################
 
 @router.get("/home", response_class=HTMLResponse)
 def home(request: Request, client: Client = Depends(get_client)):
 
-    token = request.cookies.get('my_cookie')
-    if not token:
-        return templates.TemplateResponse('base.html',{"request":request})
-
-    auth_me = client.get('/auth/me', headers = {'Authorization': 'Bearer ' + token})
-    if auth_me.status_code != 200:
-        return templates.TemplateResponse('base.html',{"request":request})
-
-    name = auth_me.json()[0].get('full_name')
-
-    return templates.TemplateResponse('home.html',
-            {"request":request, 'username': name})
+    return page_home(request, client)
 
 ##################### Rota para deslogar ############################
 
@@ -112,45 +92,7 @@ def singnup(
 @router.get("/edit_datas", response_class=HTMLResponse)
 def edit_user(request: Request, client: Client = Depends(get_client)):
 
-    token = request.cookies.get('my_cookie')
-    if not token:
-        return templates.TemplateResponse('base.html',{"request":request})
-
-    auth_me = client.get('/auth/me', headers = {'Authorization': 'Bearer ' + token})
-    if auth_me.status_code != 200:
-        return templates.TemplateResponse('base.html', {"request": request})
-
-    user_id = auth_me.json()[0].get('id')
-
-    response_user = client.get(f'/users/get/{user_id}')
-    response_address = client.get(f'/address/register/get_user_id/{user_id}')
-
-    params_user = response_user.json()[0]
-    params_address = response_address.json()[0]
-
-    if response_user.status_code == 200:
-
-        nome = params_user.get('full_name')
-        email = params_user.get('email')
-        cpf = params_user.get('cpf')
-        pis = params_user.get('pis')
-        country = params_address.get('country')
-        state = params_address.get('state')
-        city = params_address.get('city')
-        cep = params_address.get('cep')
-        street = params_address.get('street')
-        number = params_address.get('number')
-        complement = params_address.get('complement')
-
-        return templates.TemplateResponse(
-            'edit_datas.html',
-            {
-                "request":request,
-                "nome":nome, "email":email, "cpf":cpf, "pis": pis,
-                "country":country, "state":state, "city":city, "cep":cep,
-                "street":street, "number":number, "complement":complement
-            }
-        )
+    return edit_users_and_address_get(request, client)
 
 
 @router.post("/edit_datas", response_class=RedirectResponse, status_code=302)
@@ -171,54 +113,18 @@ def singnup(
     complement: str = Form(...),
     client: Client = Depends(get_client)):
 
-    token = request.cookies.get('my_cookie')
-    response = client.get('/auth/me', headers = {'Authorization': 'Bearer ' + token})
-    user_id = response.json()[0].get('id')
-
-    cadastro = dict(full_name = nome,
-                    email = email,
-                    cpf = cpf,
-                    pis = pis,
-                    senha = password,
-                    senha_repet = password2)
-
-    register_datas_user = client.patch(f"/users/patch/update/{user_id}",
-        json=cadastro)
-
-    get_address_id = client.get(f"/address/register/get_user_id/{user_id}")
-    id_address = get_address_id.json()[0].get('id')
-
-    cadastro_address = dict(
-        country = country,
-        state = state,
-        city = city,
-        cep = cep,
-        street = street,
-        number = number,
-        complement = complement)
-
-    register_datas_address = client.patch(f'/address/register/update/{id_address}',
-        json=cadastro_address)
-
-    return RedirectResponse(url='/home', status_code=status.HTTP_302_FOUND)
-
+    return edit_users_and_address_post(
+        request, nome, email, cpf, pis, password,
+        password2, country, state, city, cep, street,
+        number, complement, client
+        )
 
 ######################## Pagina para deletar dados do usuario ######################
 
 @router.get('/delete', response_class=HTMLResponse)
 def delete_user(request: Request, client: Client = Depends(get_client)):
 
-    token = request.cookies.get('my_cookie')
-    if not token:
-        return templates.TemplateResponse('base.html', {"request":request})
-
-    auth_me = client.get('/auth/me', headers = {'Authorization': 'Bearer ' + token})
-    if auth_me.status_code != 200:
-        return templates.TemplateResponse('base.html', {"request":request})
-
-    name = auth_me.json()[0].get('full_name')
-    return templates.TemplateResponse('delete.html',
-        {"request":request, "name": name})
+    return delete_user_and_address_get(request, client)
 
 
 @router.post('/delete', response_class=RedirectResponse, status_code=302)
@@ -226,8 +132,4 @@ def delete_user(request: Request,
     password: str = Form(...),
     client: Client = Depends(get_client)):
 
-    token = request.cookies.get('my_cookie')
-    if not token:
-        return templates.TemplateResponse('base.html', {"request":request})
-
-    return delete_user_and_address(request, password, client, token, templates)
+    return delete_user_and_address_post(request, password, client)
