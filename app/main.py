@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from sqlmodel import SQLModel
 from dotenv import load_dotenv
 from app.ext.db import engine
-from app.ext.routes import users, address, auth, templates, session_data
+from app.ext.routes import users, address, auth, templates
 from fastapi.staticfiles import StaticFiles
 #from fastapi.middlewares.core import CORSMiddleware
 
@@ -25,6 +25,5 @@ app.include_router(users.router)
 app.include_router(address.router)
 app.include_router(auth.router)
 app.include_router(templates.router)
-app.include_router(session_data.router)
 
 SQLModel.metadata.create_all(engine)

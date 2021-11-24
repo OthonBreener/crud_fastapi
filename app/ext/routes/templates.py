@@ -3,9 +3,13 @@ from httpx import Client
 from fastapi import APIRouter, Request, Form, status, Depends
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
-from validate_docbr import PIS, CPF
-from app.ext.core.utils import get_client, verification_type_login, creation_session_data
-from app.ext.providers.hash_provider import verification_hash, generation_hash
+from app.ext.core.utils import get_client
+from app.ext.controllers.templates_controller import (
+    verification_type_login,
+    register_user_and_address,
+    delete_user_and_address
+)
+
 from config import TEMPLATE_FOLDER
 
 router = APIRouter(
@@ -15,6 +19,7 @@ router = APIRouter(
 
 templates = Jinja2Templates(directory=TEMPLATE_FOLDER)
 client_redis = redis.Redis(host='localhost', port=6379, db=0)
+
 ##################### Login ##########################
 
 @router.get("/", response_class=HTMLResponse)
@@ -44,6 +49,7 @@ def initial_page(
         {"request": request})
 
 ####################### Page Home #########################################
+
 @router.get("/home", response_class=HTMLResponse)
 def home(request: Request, client: Client = Depends(get_client)):
 
@@ -95,39 +101,14 @@ def singnup(
     complement: str = Form(...),
     client: Client = Depends(get_client)):
 
-    login = dict(email = email, senha = password)
-
-    cadastro = dict(full_name = nome,
-                    email = email,
-                    cpf = cpf,
-                    pis = pis,
-                    senha = password,
-                    senha_repet = password2)
-
-    register_datas_user = client.post("/auth/signup", json=cadastro, timeout=None)
-
-    logar_usuario = client.post('/auth/signin', json=login, timeout=None)
-    token = logar_usuario.json()['access_token']
-    user_id = register_datas_user.json()['id']
-
-    cadastro_address = dict(
-        country = country,
-        state = state,
-        city = city,
-        cep = cep,
-        street = street,
-        number = number,
-        complement = complement,
-        user_id = user_id)
-
-    register_datas_address = client.post('/address/register', json=cadastro_address)
-
-    redirect = RedirectResponse(url='/home', status_code=status.HTTP_302_FOUND)
-    redirect.set_cookie(key = 'my_cookie', value=token)
-
-    return redirect
+    return register_user_and_address(
+        nome, email, cpf, pis, password, password2,
+        country, state, city, cep, street, number,
+        complement, client
+        )
 
 #################### Pagina de edição de dados do usuário ###################
+
 @router.get("/edit_datas", response_class=HTMLResponse)
 def edit_user(request: Request, client: Client = Depends(get_client)):
 
@@ -249,26 +230,4 @@ def delete_user(request: Request,
     if not token:
         return templates.TemplateResponse('base.html', {"request":request})
 
-    response = client.get('/auth/me', headers = {'Authorization': 'Bearer ' + token})
-    email = response.json()[0].get('email')
-    user_id = response.json()[0].get('id')
-
-    response_pass = client.get(f'/users/get_pass/{email}')
-    senha_hash = response_pass.json()[0].get('senha')
-
-    if verification_hash(password, senha_hash) is True:
-
-        address = client.get(f'/address/register/get_user_id/{user_id}')
-        address_id = address.json()[0].get('id')
-
-        delete_address = client.delete(f'/address/register/delete/{address_id}')
-        delete_user = client.delete(f'/users/delete/{user_id}')
-
-        if delete_user.status_code == 200:
-            redirect = RedirectResponse(url='/', status_code=status.HTTP_302_FOUND)
-            redirect.delete_cookie('my_cookie')
-            return redirect
-
-        return templates.TemplateResponse('base.html', {"request":request})
-
-    return templates.TemplateResponse('delete.html', {"request":request})
+    return delete_user_and_address(request, password, client, token, templates)
