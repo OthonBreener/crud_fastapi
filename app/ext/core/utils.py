@@ -25,16 +25,6 @@ def get_session():
         yield session
 
 
-def get_user_id_by_response(response_session, client: Client):
-
-    bearer = response_session.get('token')
-    response = client.get('/auth/me', headers = {'Authorization': 'Bearer ' + bearer})
-    data = response.json()
-    user_id = data[0].get('id')
-
-    return user_id
-
-
 def verification_type_login(username: str, password: str) -> Dict[str, str]:
 
     cpf = CPF()
@@ -51,13 +41,12 @@ def verification_type_login(username: str, password: str) -> Dict[str, str]:
     return login
 
 
-def creation_session_data(result, client: Client):
+def creation_session_data(token: str, client: Client):
+    """
+    Função que cria cookies armazenando
+    o token do usuário.
+    """
+    session_data = dict(token = token)
+    response_session = client.post('/session/create_session', json = session_data)
 
-    email = result.json()['user'].get('email')
-    token = result.json()['access_token']
-    response = client.get('/auth/me', headers = {'Authorization': 'Bearer ' + token})
-    name = response.json()[0].get('full_name')
-
-    session_data = dict(full_name = name, token = token, email = email)
-
-    return session_data
+    return response_session

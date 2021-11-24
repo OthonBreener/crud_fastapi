@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from sqlmodel import Session, select
 from app.ext.db.users_model import User, UserUpdate, UserLogin
-
+from app.ext.providers import hash_provider
 
 def find_users(session: Session):
     """
@@ -88,6 +88,10 @@ def update_users(id: int, user: UserUpdate, session: Session) -> UserUpdate:
         id: Id do usuário a ser atualizado
         user: Request com os dados a serem atualizados
     """
+
+    if user.senha:
+        user.senha = hash_provider.generation_hash(user.senha)
+        user.senha_repet = hash_provider.generation_hash(user.senha_repet)
 
     db_user = session.get(User, id)
     if not db_user:

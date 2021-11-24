@@ -4,14 +4,15 @@
 </meta>
 
 <style>
-  body{   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;   background-color: #454d6b; } .container {
-  padding: 50px;   background-color: #454d6b; }  input[type=text], input[type=password], textarea {
-  width: 100%;   padding: 15px;   margin: 5px 0 22px 0;   display: inline-block;   border: none;
-  background: rgba(19, 19, 19, 0.3); } input[type=text]:focus, input[type=password]:focus {
-  background-color: #FFFFFF;   outline: none; }  div {             padding: 10px 0;          } hr {
-  border: 1px solid #fff;   margin-bottom: 25px; } .registerbtn {   background-color: #a13854;
-  color: #fff;   padding: 16px 20px;   margin: 8px 0;   border: none;   cursor: pointer;   width:
-  100%;   opacity: 0.9; } .registerbtn:hover {   opacity: 1; }
+  body{   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  background-color: #454d6b; } .container {   padding: 50px;   background-color: #454d6b; }
+  input[type=text], input[type=password], textarea {   width: 100%;   padding: 15px;   margin: 5px 0
+  22px 0;   display: inline-block;   border: none;   background: rgba(19, 19, 19, 0.3); }
+  input[type=text]:focus, input[type=password]:focus {   background-color: #FFFFFF;   outline: none;
+  }  div {             padding: 10px 0;          } hr {   border: 1px solid #fff;   margin-bottom:
+  25px; } .card-footer { display: flex; flex-direction: column; } .card-footer .submit{
+  width: 100%;        height: 40px;        background-color: #a13854;        border:none;
+  color:#e1e1e1;        margin: 10px 0;    }
 </style>
 
 <form
@@ -138,9 +139,20 @@
       required
       value="{{password2}}"
       type="password"/>
-    <input
-      class="registerbtn"
-      type="submit"
-      value="Registrar">
+    <center>
+      <div class="card-footer">
+        <input
+          class="submit"
+          type="submit"
+          value="Registrar"/>
+      </div>
+      <div class="card-footer">
+        <a
+          class="submit"
+          href="{{ url_for('home') }}">
+          Voltar
+        </a>
+      </div>
+    </center>
   </div>
 </form>

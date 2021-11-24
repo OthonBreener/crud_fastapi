@@ -1,8 +1,7 @@
 from typing import Optional, List
 from pydantic import BaseModel
-#from sqlmodel import Field, SQLModel
 
 class SessionData(BaseModel):
-    full_name: str
-    token: str
-    email: str
+    full_name: Optional[str]
+    token: Optional[str]
+    email: Optional[str]
