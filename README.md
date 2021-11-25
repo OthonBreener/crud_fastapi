@@ -1,5 +1,18 @@
 ## Sobre o projeto
 
+Este projeto consiste em uma REST API (ou crud) feita com o python
+utilizando o FastAPI como framework e o postgresql como banco de dados.
+Os dados do crud são compostos por um cadastro de usuários com os atributos
+nome, cpf, email, pis, senha e o endereço possui País, Estado, cidade, cep,
+rua, número e complemento.
+
+O endpoints podem ser consultados na documentação gerada automaticamente
+pelo swagger, para isso basta adicionar '/docs' no final da url.
+Exemplo:
+    http://localhost:8000/docs
+
+Além disso, foi utilizado o jinja2 para renderizar os templates básicos
+para um cadastro de usuários.
 
 ## Rodando a aplicação com o Docker
 
