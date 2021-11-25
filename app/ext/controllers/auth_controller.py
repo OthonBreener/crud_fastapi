@@ -59,6 +59,9 @@ def login(user_login: UserLogin, session: Session):
     user_cpf = user_controller.find_users_by_cpf(cpf, session)
     user_pis = user_controller.find_users_by_pis(pis, session)
 
+    if user_email == user_cpf == user_pis == []:
+        raise HTTPException(status_code=400, detail='Login ou senha incorretos!')
+
     if user_email:
         validation_senha =  hash_provider.verification_hash(user_login.senha, user_email[0].senha)
         token = token_provider.creation_access_token({'sub':user_email[0].email})
