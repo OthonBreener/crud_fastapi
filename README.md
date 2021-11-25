@@ -33,8 +33,9 @@ siga os passos abaixo:
 1. Crie um ambiente virtual, para isso você pode utilizar o virtualenv:
 
 ```sh
-virtualenv -p python3 venv
+virtualenv -p python3.8.10 venv
 ```
+Foi utilizado a versão 3.8.10 do python.
 
 2. Com o ambiente virtual ativo, instale as dependências:
 
