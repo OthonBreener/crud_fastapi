@@ -5,18 +5,11 @@ from typing import Dict
 from validate_docbr import PIS, CPF
 from app.ext.db import engine
 
-def get_env(data: str):
-    """
-    Função que busca uma string nas váriaveis de ambiente.
-    """
-    return os.environ.get(data)
-
-
 def get_client():
     """
     Função que retorna o cliente do httpx.
     """
-    with Client(base_url = "http://localhost:8000") as client:
+    with Client(base_url = "http://localhost:8005") as client:
         yield client
 
 

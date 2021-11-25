@@ -1,4 +1,3 @@
-import redis, json
 from httpx import Client
 from fastapi import APIRouter, Request, Form, status, Depends
 from fastapi.templating import Jinja2Templates
@@ -21,8 +20,6 @@ router = APIRouter(
 )
 
 templates = Jinja2Templates(directory=TEMPLATE_FOLDER)
-client_redis = redis.Redis(host='localhost', port=6379, db=0)
-
 ##################### Login ##########################
 
 @router.get("/", response_class=HTMLResponse)

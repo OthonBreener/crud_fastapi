@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from jose import jwt
-from app.ext.core.utils import get_env
+from app.ext.core.config import settings
 
 
 def creation_access_token(data: dict):
@@ -12,11 +12,11 @@ def creation_access_token(data: dict):
     datas = data.copy()
     expire = datetime.utcnow() + timedelta(minutes = 3000)
     datas.update({'exp':expire})
-    token_jwt = jwt.encode(datas, get_env('SECRET_KEY'), algorithm = get_env('ALGORITHM'))
+    token_jwt = jwt.encode(datas, settings.secret_key, algorithm = settings.algorithm)
     return token_jwt
 
 
 def validation_access_token(token: str):
 
-    payload = jwt.decode(token, get_env('SECRET_KEY'), algorithms=[get_env('ALGORITHM')])
+    payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
     return payload.get('sub')

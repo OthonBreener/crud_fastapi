@@ -1,11 +1,11 @@
 ## Sobre o projeto
 
 
-## Docker
+## Rodando a aplicação com o Docker
 
-* Banco de dados utilizado:
+* Subir aplicação pelo docker:
 ```sh
-docker run --name database_postgre -e POSTGRES_PASSWORD=senha -p 5432:5432 -d postgres:14
+make docker
 ```
 
 * Criando a imagem da aplicação apartir do Dockerfile:
@@ -13,7 +13,7 @@ docker run --name database_postgre -e POSTGRES_PASSWORD=senha -p 5432:5432 -d po
 docker build --tag crud-fastapi .
 ```
 
-## Dependencias
+## Rodando a aplicação sem o docker
 
 Se você quiser rodar o código localmente, sem usar o docker,
 siga os passos abaixo:
@@ -42,3 +42,28 @@ ou simplismente digitar no terminal:
 make run
 ```
 4. Não se esqueça de subir a imagem docker do banco de dados.
+
+```sh
+docker run --name database_postgre -e POSTGRES_PASSWORD=senha -p 5432:5432 -d postgres:14
+```
+
+## Observações:
+
+1. Se você estiver rodando o projeto localmente sem o docker use a variável de ambiente para o banco de dados
+como:
+
+```sh
+postgresql://postgres:senha@localhost:5432/postgres
+```
+
+Agora se estiver usando o docker, lembre-se de alterar o localhost por postgres, que é o
+nome do banco de dados definido no arquivo docker-compose.yml. Assim, você teria:
+
+```sh
+postgresql://postgres:senha@postgres:5432/postgres
+```
+
+2. Dentro do arquivo utils contido em app.ext.core, o get_client utilizado no templates
+seta a url como "http://localhost:8000", se estiver rodando o docker com a porta 8000
+fique atento ao tentar rodar no localhost depois. Podera haver conflitos de rotas, se vc alterar
+a rota que uvicorn roda, lembre-se alterar no utils também.
