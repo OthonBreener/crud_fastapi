@@ -16,6 +16,8 @@ para um cadastro de usuários.
 
 ## Rodando a aplicação com o Docker
 
+**Clone este repositório pela brach main**
+
 * Subir aplicação pelo docker:
 ```sh
 make docker
@@ -27,6 +29,8 @@ docker build --tag crud-fastapi .
 ```
 
 ## Rodando a aplicação sem o docker
+
+**Clone este repositório pela brach main**
 
 Se você quiser rodar o código localmente, sem usar o docker,
 siga os passos abaixo:
