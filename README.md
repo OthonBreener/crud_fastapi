@@ -59,6 +59,15 @@ make run
 ```sh
 docker run --name database_postgre -e POSTGRES_PASSWORD=senha -p 5432:5432 -d postgres:14
 ```
+## Testes
+
+Os testes unitários foram feitos utilziando o pytest, para roda-los basta
+utlizar o comando:
+
+```sh
+pytest
+```
+Ou adicione '-v' ao final para exibir cada teste.
 
 ## Observações:
 
