@@ -12,14 +12,13 @@ from app.ext.controllers.templates_controller import (
     initial_page_template,
     page_home
 )
-from config import TEMPLATE_FOLDER
 
 router = APIRouter(
     tags=['Tempates'],
     responses={404: {"description": "Not Found"}},
 )
 
-templates = Jinja2Templates(directory=TEMPLATE_FOLDER)
+templates = Jinja2Templates(directory='templates')
 ##################### Login ##########################
 
 @router.get("/", response_class=HTMLResponse)

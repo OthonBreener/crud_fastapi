@@ -9,7 +9,7 @@ def get_client():
     """
     Função que retorna o cliente do httpx.
     """
-    with Client(base_url = "http://localhost:8005") as client:
+    with Client(base_url = "http://localhost:8000") as client:
         yield client
 
 

@@ -18,14 +18,9 @@ para um cadastro de usuários.
 
 **Clone este repositório pela brach main**
 
-* Subir aplicação pelo docker:
+* Subir aplicação pelo docker-compose:
 ```sh
 make docker
-```
-
-* Criando a imagem da aplicação apartir do Dockerfile:
-```sh
-docker build --tag crud-fastapi .
 ```
 
 ## Rodando a aplicação sem o docker
@@ -59,10 +54,10 @@ ou simplismente digitar no terminal:
 make run
 ```
 4. Não se esqueça de subir a imagem docker do banco de dados.
-
 ```sh
 docker run --name database_postgre -e POSTGRES_PASSWORD=senha -p 5432:5432 -d postgres:14
 ```
+
 ## Testes
 
 Os testes unitários foram feitos utilziando o pytest, para roda-los basta

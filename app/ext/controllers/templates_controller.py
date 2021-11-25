@@ -5,9 +5,8 @@ from validate_docbr import PIS, CPF
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse, HTMLResponse
 from app.ext.providers.hash_provider import verification_hash
-from config import TEMPLATE_FOLDER
 
-templates = Jinja2Templates(directory=TEMPLATE_FOLDER)
+templates = Jinja2Templates(directory='templates')
 
 def verification_type_login(username: str, password: str) -> Dict[str, str]:
     """
@@ -229,7 +228,7 @@ def delete_user_and_address_post(request: Request, password: str, client: Client
     """
     Função que deleta um usuário e apaga sua seção.
     """
-    
+
     token = request.cookies.get('my_cookie')
     if not token:
         return templates.TemplateResponse('base.html', {"request":request})
